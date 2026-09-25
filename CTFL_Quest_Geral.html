@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CTFL Quest — Treino para a prova CTFL 4.0</title>
+<style>
+:root{--bg:#0f1226;--bg2:#171b36;--card:#1e2346;--card2:#262c57;--txt:#eef0ff;--mut:#9aa2d6;--pri:#7c5cff;--pri2:#a58bff;--ok:#2ecc8f;--bad:#ff5d73;--warn:#ffc24b;--r:16px}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;background:radial-gradient(1200px 600px at 10% -10%,#2a2170 0%,transparent 60%),var(--bg);color:var(--txt);min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer;border:0}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 60px}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.logo{font-weight:800;font-size:20px;letter-spacing:.3px;cursor:pointer}
+.logo span{color:var(--pri2)}
+.pill{background:var(--card);padding:6px 12px;border-radius:999px;font-size:14px;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.sp{flex:1}
+.card{background:var(--card);border-radius:var(--r);padding:18px;margin-bottom:14px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.hero{background:linear-gradient(135deg,#3b2aa8,#7c5cff 60%,#b06cff);position:relative;overflow:hidden}
+.hero h2{margin:0 0 4px;font-size:22px}
+.hero .lv{font-size:14px;opacity:.9}
+.bar{height:12px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden;margin:10px 0 4px}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,#ffe066,#ffb84b);border-radius:99px;transition:width .6s}
+.bar.g>i{background:linear-gradient(90deg,#2ecc8f,#5ff0b5)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.tile{background:var(--card);border-radius:var(--r);padding:16px;text-align:left;transition:transform .12s,background .12s;display:flex;flex-direction:column;gap:6px;min-height:118px}
+.tile:hover{transform:translateY(-3px);background:var(--card2)}
+.tile .ic{font-size:28px}
+.tile b{font-size:16px}
+.tile small{color:var(--mut);font-size:13px;line-height:1.35}
+.tile.big{grid-column:1/-1;background:linear-gradient(135deg,#1f6f5a,#2ecc8f);min-height:auto;flex-direction:row;align-items:center;gap:14px}
+.tile.big .ic{font-size:38px}
+.tile.big small{color:#e6fff5}
+.badge{display:inline-block;background:var(--bad);color:#fff;border-radius:99px;padding:1px 8px;font-size:12px;font-weight:700;margin-left:6px}
+h3{margin:18px 0 10px;font-size:15px;color:var(--mut);text-transform:uppercase;letter-spacing:1px}
+.chap{display:flex;align-items:center;gap:14px;background:var(--card);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;width:100%;text-align:left}
+.chap:hover{background:var(--card2)}
+.chap .num{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:var(--card2);flex:none}
+.chap .info{flex:1}
+.chap .info small{color:var(--mut)}
+.stars{color:var(--warn);letter-spacing:2px}
+.btn{background:var(--pri);padding:12px 18px;border-radius:12px;font-weight:700}
+.btn:hover{filter:brightness(1.1)}
+.btn.sec{background:var(--card2)}
+.btn.ok{background:var(--ok);color:#06281c}
+.btn.full{width:100%}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{background:var(--card);padding:8px 14px;border-radius:99px;font-size:14px}
+.tabs button.on{background:var(--pri)}
+.lesson{font-size:16px;line-height:1.55}
+.lesson h4{margin:0 0 8px;font-size:18px;color:var(--pri2)}
+.trap{background:#3a1f2c;border-left:4px solid var(--bad);padding:10px 12px;border-radius:10px;margin:8px 0;font-size:15px}
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:14px;color:var(--mut)}
+.hearts{font-size:18px;letter-spacing:2px}
+.qtext{font-size:17px;line-height:1.5;margin-bottom:14px}
+.qtext pre{background:#0b0e20;padding:10px;border-radius:10px;overflow:auto;font-size:14px}
+.opt{display:block;width:100%;text-align:left;background:var(--card2);padding:13px 14px;border-radius:12px;margin-bottom:9px;font-size:15.5px;line-height:1.4;border:2px solid transparent;transition:background .12s}
+.opt:hover:not(:disabled){background:#313873}
+.opt .l{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.1);margin-right:10px;font-weight:700;font-size:13px}
+.opt.sel{border-color:var(--pri2)}
+.opt.ok{background:#15543f;border-color:var(--ok)}
+.opt.bad{background:#5a1e2a;border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{border-radius:12px;padding:14px;margin-top:6px;font-size:15.5px;line-height:1.5}
+.fb.ok{background:#123f31}
+.fb.bad{background:#46182a}
+.fb b{display:block;margin-bottom:4px;font-size:17px}
+.tag{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--card2);color:var(--mut)}
+.tag.w{background:#5a3a12;color:#ffd48a}
+.tb{border-collapse:collapse;margin:8px 0;font-size:13.5px;width:100%;overflow:auto;display:block}
+.tb td,.tb th{border:1px solid #3a4180;padding:4px 7px;text-align:center}
+.tb th{background:#2b3166}
+.dg{width:100%;max-width:420px;display:block;margin:8px auto 14px;color:#cfd4ff;background:#0b0e20;border-radius:12px;padding:10px}
+.dg .bx rect,.dg .st circle{fill:#1e2346;stroke:#cfd4ff}
+.flash{perspective:1000px;height:230px;cursor:pointer;margin-bottom:12px}
+.flash .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+.flash.fl .in{transform:rotateY(180deg)}
+.flash .f,.flash .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:var(--r);display:grid;place-items:center;padding:24px;text-align:center}
+.flash .f{background:linear-gradient(135deg,#3b2aa8,#7c5cff);font-size:26px;font-weight:800}
+.flash .b{background:var(--card2);transform:rotateY(180deg);font-size:18px;line-height:1.5}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.cats button{background:var(--card2);padding:12px;border-radius:12px;font-size:14.5px;font-weight:600}
+.cats button:hover{background:#313873}
+.cats button.ok{background:#15543f}.cats button.bad{background:#5a1e2a}
+.item{font-size:18px;line-height:1.45;background:var(--card2);padding:18px;border-radius:14px;margin-bottom:12px;min-height:80px}
+.center{text-align:center}
+.big{font-size:44px;font-weight:800;margin:6px 0}
+.ach{display:flex;gap:12px;align-items:center;padding:12px;border-radius:12px;background:var(--card2);margin-bottom:8px}
+.ach.off{opacity:.38;filter:grayscale(1)}
+.ach .e{font-size:28px}
+.ach small{color:var(--mut)}
+.toast{position:fixed;left:50%;top:18px;transform:translateX(-50%) translateY(-120px);background:#2b2166;border:1px solid var(--pri2);padding:12px 18px;border-radius:14px;z-index:99;transition:transform .35s;box-shadow:0 10px 30px rgba(0,0,0,.4);font-weight:600;max-width:90vw}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.xpfly{position:fixed;font-weight:800;color:#ffe066;pointer-events:none;animation:fly 1s ease-out forwards;z-index:98;font-size:20px}
+@keyframes fly{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-60px)}}
+.conf{position:fixed;top:-20px;font-size:22px;animation:fall 2.2s linear forwards;z-index:97;pointer-events:none}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+.timer{font-variant-numeric:tabular-nums;font-weight:700}
+.nav{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0}
+.nav button{width:34px;height:34px;border-radius:8px;background:var(--card2);font-size:13px}
+.nav button.ans{background:#3b3a8a}.nav button.cur{outline:2px solid var(--pri2)}
+.nav button.ok{background:#15543f}.nav button.bad{background:#5a1e2a}
+.stat{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #2b3166;font-size:15px}
+.mut{color:var(--mut)}
+.combo{color:var(--warn);font-weight:800}
+a{color:var(--pri2)}
+@media(max-width:520px){.qtext{font-size:16px}.opt{font-size:15px}.grid{grid-template-columns:1fr 1fr}.tile{min-height:110px;padding:13px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="top">
+  <div class="logo" onclick="go('home')">🎯 CTFL <span>Quest</span></div>
+  <div class="sp"></div>
+  <div class="pill" title="Dias seguidos estudando">🔥 <b id="tStreak">0</b></div>
+  <div class="pill" title="Experiência">⭐ <b id="tXp">0</b></div>
+ </div>
+ <div id="app"></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+// ===== BANCO DE QUESTÕES — parte 1 (Capítulo 1 e 2) =====
+// a = índice da correta (0=a,1=b,2=c,3=d)
+const Q = [];
+const add = (o) => Q.push(o);
+
+// ---------- Capítulo 1 - Simulado 2 ----------
+add({id:"c1-1",ch:1,src:"Cap. 1 – Simulado 2",q:"Qual das opções abaixo NÃO representa um objetivo típico do teste de software?",o:["Verificar se um objeto de teste está em conformidade com requisitos legais ou contratuais.","Aumentar a complexidade do código para torná-lo mais desafiador de testar.","Avaliar produtos de trabalho, como requisitos (histórias de usuário) e código.","Fornecer informações para apoiar decisões sobre liberação de versões."],a:1,e:"Teste existe para achar problemas e dar informação. Deixar o código mais complicado de propósito não faz sentido nenhum — é a alternativa 'absurda'."});
+add({id:"c1-2",ch:1,src:"Cap. 1 – Simulado 2",q:"Uma falha foi observada: ao adicionar um item ao carrinho, o total não atualizava. A equipe usou uma ferramenta para acompanhar o código passo a passo e ver as variáveis. Qual alternativa está CORRETA sobre teste e depuração?",o:["O teste tem como objetivo principal corrigir os defeitos encontrados.","A depuração serve para planejar e controlar a execução dos testes.","O teste revela falhas; a depuração encontra, analisa e elimina os defeitos que causaram essas falhas.","A depuração é feita antes dos testes para evitar falhas."],a:2,e:"Teste = MOSTRA que algo está errado. Depuração = ACHA e CONSERTA a causa. Quem testa aponta, quem depura conserta."});
+add({id:"c1-3",ch:1,src:"Cap. 1 – Simulado 2",q:"Quais são as principais contribuições dos testes para o sucesso do projeto?",o:["Garantir que todos os defeitos sejam corrigidos no desenvolvimento.","Substituir completamente a participação dos usuários.","Contribuir para decisões de projeto, representar indiretamente os usuários e atender requisitos contratuais ou regulatórios.","Eliminar a necessidade de depuração e garantir conformidade com marketing."],a:2,e:"Palavras como 'garantir TODOS', 'substituir completamente', 'eliminar' são quase sempre erradas. Teste ajuda a decidir, representa o usuário e cobre exigências legais."});
+add({id:"c1-4",ch:1,src:"Cap. 1 – Simulado 2",q:"Qual a explicação mais adequada para a diferença entre Teste, Garantia da Qualidade (QA) e Controle de Qualidade (QC)?",o:["Teste é uma forma de QC; QC é corretivo e orientado ao produto; QA é preventivo e orientado ao processo.","Teste é uma forma de QA; QC é corretivo e orientado ao produto; QA é preventivo e orientado ao processo.","Teste é uma forma de QA; QC é preventivo e orientado ao processo; QA é corretivo e orientado ao produto.","Teste, QC e QA são sinônimos."],a:0,e:"Macete: QC = Conserta o produto (Corretivo). QA = Antecipa no processo (preventivo). E TESTE mora dentro do QC."});
+add({id:"c1-5",ch:1,src:"Cap. 1 – Simulado 2",q:"O sistema permitia compras com cartão vencido. A verificação de validade não foi implementada porque o desenvolvedor assumiu que outro sistema faria isso. Qual alternativa está CORRETA?",o:["O defeito é o resultado observado: o sistema permitia compras com cartão vencido.","A falha é a falta de verificação da validade no código.","O erro é o testador fazer um teste que não estava previsto.","A causa-raiz é a suposição do desenvolvedor de que outro sistema faria a verificação."],a:3,e:"Cadeia: causa-raiz (a suposição) → erro humano → defeito (falta no código) → falha (o que se VÊ: compra aprovada). O que o testador observa é FALHA, não defeito."});
+add({id:"c1-6",ch:1,src:"Cap. 1 – Simulado 2",q:"Ao inserir 1200,50 (com vírgula) o cálculo de juros saía errado. O desenvolvedor assumiu o formato americano (ponto decimal). O que é o ERRO?",o:["O resultado incorreto no cálculo de juros.","O desenvolvedor que assumiu o formato americano na rotina de cálculo.","A implementação do formato americano no código.","O testador inserindo um valor com vírgula."],a:1,e:"ERRO = ação HUMANA (a pessoa se enganou). Código errado = defeito. Resultado errado na tela = falha."});
+add({id:"c1-7",ch:1,src:"Cap. 1 – Simulado 2",q:"Um membro sugere testar todas as combinações possíveis de entrada para garantir qualidade total. Como avaliar?",o:["É viável se houver tempo.","É recomendado, principalmente em sistemas críticos.","Não é recomendado: testar todas as combinações é inviável na maioria dos contextos.","É viável se automatizar tudo."],a:2,e:"Princípio 2: testes exaustivos são impossíveis (exceto casos triviais). Nem com automação."});
+add({id:"c1-8",ch:1,src:"Cap. 1 – Simulado 2",q:"Um gerente diz: 'os testes passaram sem falhas, então o sistema está 100% livre de defeitos'. Como responder?",o:["Concordar.","Explicar que os testes aumentam a confiança, mas nunca provam ausência total de defeitos.","Dizer que ausência de falhas garante aprovação.","Dizer que é preciso reexecutar tudo."],a:1,e:"Princípio 1: o teste mostra a PRESENÇA de defeitos, não a ausência."});
+add({id:"c1-9",ch:1,src:"Cap. 1 – Simulado 2",q:"No início do processo, a equipe discute os riscos do produto, suas probabilidades, impactos e formas de mitigação. Em qual grupo de atividades ela está?",o:["Planejamento do teste.","Análise de teste.","Modelagem de teste.","Monitoramento e controle de teste."],a:0,e:"Levantar riscos + probabilidade + impacto + mitigação para decidir a abordagem = PLANEJAMENTO. (A Análise prioriza condições de teste, não monta o registro de riscos do plano.)"});
+add({id:"c1-10",ch:1,src:"Cap. 1 – Simulado 2",q:"Qual ação pertence ao grupo de IMPLEMENTAÇÃO dos testes?",o:["Avaliar a cobertura com base nos riscos e decidir a liberação.","Executar sessões exploratórias e testes automatizados.","Organizar os casos de teste em procedimentos de teste e reunir em conjuntos de teste.","Registrar defeitos e atualizar a situação dos casos."],a:2,e:"Implementação = deixar tudo PRONTO para rodar: procedimentos, scripts, conjuntos (suítes), dados, ambiente, cronograma de execução."});
+add({id:"c1-11",ch:1,src:"Cap. 1 – Simulado 2",q:"Uma empresa tem um sistema bancário crítico e um app de entretenimento, e usa processos de teste diferentes para cada um. Qual fator justifica isso?",o:["Restrições de tempo e orçamento.","Disponibilidade de ferramentas.","A criticidade e os riscos de cada projeto.","O tamanho da equipe."],a:2,e:"Princípio 6: o teste depende do contexto. O cenário fala de 'crítico' vs 'entretenimento' → risco/criticidade."});
+add({id:"c1-12",ch:1,src:"Cap. 1 – Simulado 2",q:"Numa auditoria pediram os artefatos de teste e o gerente entregou só os scripts automatizados. Qual a falha segundo a definição de testware?",o:["Faltaram os scripts manuais.","Testware inclui só registros e relatórios de defeitos.","Testware é só as ferramentas.","Testware inclui TODOS os produtos de trabalho do processo de teste: plano, condições, casos, dados, scripts etc."],a:3,e:"Testware = tudo que o processo de teste produz. Não é só script."});
+add({id:"c1-13",ch:1,src:"Cap. 1 – Simulado 2",q:"A equipe está na ANÁLISE de teste, entendendo o que precisa ser testado a partir da base de teste. Qual testware é típico desse grupo?",o:["Relatório de defeitos com status de correção.","Lista de condições de teste derivadas dos requisitos.","Casos de teste priorizados, requisitos de ambiente e dados de teste.","Registro de riscos e cronograma."],a:1,e:"Análise = O QUE testar → condições de teste. Modelagem = COMO testar → casos de teste. Grave: Análise→Condições, Modelagem→Casos."});
+add({id:"c1-14",ch:1,src:"Cap. 1 – Simulado 2",q:"Qual artefato é um testware gerado na EXECUÇÃO dos testes?",o:["Registro de testes com a situação de cada caso de teste.","Requisitos do usuário da análise de negócios.","Plano de teste.","Matriz de rastreabilidade."],a:0,e:"Execução gera: registros de teste (logs) e relatórios de defeitos."});
+add({id:"c1-15",ch:1,src:"Cap. 1 – Simulado 2",q:"Um analista quer verificar se todos os requisitos foram cobertos pelos testes. Qual a principal utilidade da rastreabilidade aqui?",o:["Estimar tempo e custo por requisito.","Medir produtividade do testador.","Verificar se cada requisito está ligado a pelo menos um caso de teste.","Organizar testwares em fluxos."],a:2,e:"Rastreabilidade = ligar requisito ↔ teste. Serve para avaliar cobertura e impacto de mudanças."});
+add({id:"c1-16",ch:1,src:"Cap. 1 – Simulado 2",q:"Em uma equipe ágil, qual afirmação descreve CORRETAMENTE os papéis no teste?",o:["Só testadores podem fazer atividades de teste.","Desenvolvedores não devem participar dos testes.","Pessoas diferentes podem assumir os papéis de teste: testadores, desenvolvedores e outros stakeholders.","O gerente de projeto é o único responsável."],a:2,e:"Papel ≠ cargo. Qualquer pessoa pode assumir o papel de teste em momentos diferentes."});
+add({id:"c1-17",ch:1,src:"Cap. 1 – Simulado 2",q:"Um testador percebe que a falha só ocorre quando o assento é escolhido antes da classe, levanta uma hipótese sobre a ordem dos eventos e propõe um novo fluxo para confirmar. Que habilidade é essa?",o:["Comunicação clara.","Pensamento analítico, organizando causa e efeito.","Atenção a métricas de cobertura.","Priorizar por risco."],a:1,e:"Hipótese + causa e efeito = pensamento analítico."});
+add({id:"c1-18",ch:1,src:"Cap. 1 – Simulado 2",q:"Desde o início, testadores, devs, analistas de negócio e usuários colaboram. Qual benefício está alinhado à abordagem da equipe completa?",o:["Testes só por especialistas.","Achar defeitos só no final.","Compartilhar a responsabilidade pela qualidade entre todos.","Terceirizar os testes."],a:2,e:"Equipe completa (whole team) = qualidade é responsabilidade de TODOS."});
+add({id:"c1-19",ch:1,src:"Cap. 1 – Simulado 2",q:"A equipe de teste participa desde o refinamento de requisitos, achando ambiguidades antes da codificação. Isso é exemplo de:",o:["Contribuição proativa dos testadores para a prevenção de defeitos.","Independência dos testes.","Participação tardia.","Isolamento da equipe de teste."],a:0,e:"Entrar cedo e evitar defeitos = prevenção + equipe completa."});
+add({id:"c1-20",ch:1,src:"Cap. 1 – Simulado 2",q:"A mesma equipe projeta, codifica e testa. Vários defeitos só apareceram depois da entrega. Qual limitação da falta de independência isso mostra?",o:["Menor produtividade dos devs.","Possível viés na execução e avaliação dos testes.","Dificuldade de rastreabilidade.","Falta de ferramentas."],a:1,e:"Quem fez tende a não enxergar os próprios erros (viés cognitivo). Por isso um certo grau de independência ajuda a achar defeitos."});
+
+// ---------- Capítulo 1 - Princípios de Teste ----------
+const P7 = ["1 - O teste mostra a presença, não a ausência de defeitos","2 - Testes exaustivos são impossíveis","3 - Testes antecipados economizam tempo e dinheiro","4 - Os defeitos se agrupam","5 - Os testes se degradam","6 - Os testes dependem do contexto","7 - Falácia da ausência de defeitos"];
+add({id:"pr-1",ch:1,src:"Cap. 1 – Princípios",q:"Uma empresa só começa a testar depois que a codificação termina. Defeitos graves apareceram no fim, gerando retrabalho e atraso. Qual princípio não está sendo seguido?",o:P7,a:2,e:"Testar só no fim = caro. Testar cedo (shift-left) economiza."});
+add({id:"pr-2",ch:1,src:"Cap. 1 – Princípios",q:"A equipe diz: 'todos os testes passaram, então o app está livre de defeitos e pronto'. Qual princípio explica o erro dessa conclusão?",o:P7,a:0,e:"Passar nos testes não prova que não há defeitos. O teste só mostra que eles EXISTEM quando os encontra."});
+add({id:"pr-3",ch:1,src:"Cap. 1 – Princípios",q:"O sistema passou em 100% dos testes, mas os usuários acham difícil de usar e ineficiente. O gerente diz que não há defeitos. Qual princípio ele desconhece?",o:P7,a:6,e:"Falácia da ausência de defeitos: estar sem defeitos não adianta se o sistema não atende o que o usuário precisa (verificação ≠ validação)."});
+add({id:"pr-4",ch:1,src:"Cap. 1 – Princípios",q:"O cliente exige testar TODAS as combinações de origem, destino, datas, horários, passageiros e pagamento. Qual princípio usar para não aceitar?",o:P7,a:1,e:"Impossível testar tudo. Use técnicas para cobrir mais com menos."});
+add({id:"pr-5",ch:1,src:"Cap. 1 – Princípios",q:"Um app bancário e um jogo infantil têm estratégias de teste diferentes. O gerente pergunta por que não usar os mesmos critérios. Qual princípio ele desconhece?",o:P7,a:5,e:"Cada projeto tem seu contexto e risco."});
+add({id:"pr-6",ch:1,src:"Cap. 1 – Princípios",q:"Uma suíte automatizada continua igual desde o início, apesar do sistema ter evoluído. Os testes passam, mas defeitos escapam. Qual princípio explica?",o:P7,a:4,e:"Testes repetidos sem atualização param de achar defeitos novos (antigo 'paradoxo do pesticida')."});
+add({id:"pr-7",ch:1,src:"Cap. 1 – Princípios",q:"A maioria dos defeitos se concentrou no módulo de reabastecimento automático e continuam surgindo ali. Qual princípio?",o:P7,a:3,e:"Pareto 80/20: poucos módulos concentram a maioria dos defeitos."});
+add({id:"pr-8",ch:1,src:"Cap. 1 – Princípios",q:"Num ciclo de regressão, os mesmos testes automatizados, executados repetidamente, deixaram de encontrar novos defeitos apesar das mudanças no sistema. Qual princípio?",o:P7,a:4,e:"'Mesmos testes repetidos' + 'não acham mais nada' = os testes se degradam. Não confunda com o princípio 1."});
+add({id:"pr-9",ch:1,src:"Cap. 1 – Princípios",q:"Os testes começaram na fase de requisitos, com revisões de documentos. Qual princípio está sendo aplicado?",o:P7,a:2,e:"Revisar documentos cedo = teste antecipado (shift-left)."});
+add({id:"pr-10",ch:1,src:"Cap. 1 – Princípios",q:"Nos testes exploratórios você achou muitos defeitos em um módulo e decidiu testar mais ele. Qual princípio?",o:P7,a:3,e:"Onde tem um defeito, costuma ter mais. Defeitos se agrupam."});
+
+// ---------- Capítulo 2 - Simulado 2 ----------
+add({id:"c2-1",ch:2,src:"Cap. 2 – Simulado 2",q:"Em um projeto com modelo SEQUENCIAL, como o modelo influencia o início das atividades de teste?",o:["Testes dinâmicos começam logo após os requisitos.","Testes estáticos podem ser feitos desde as fases iniciais do ciclo de vida.","O modelo impede qualquer teste antes da codificação.","Todos os testes só após a implantação."],a:1,e:"No cascata não há código executável no começo → nada de teste dinâmico cedo. Mas revisões (teste ESTÁTICO) dá para fazer desde os requisitos."});
+add({id:"c2-2",ch:2,src:"Cap. 2 – Simulado 2",q:"Qual é INCORRETA sobre boas práticas de teste, independentemente do SDLC?",o:["Para cada atividade de desenvolvimento há uma atividade de teste correspondente.","Análise e modelagem de teste de um nível começam na fase de desenvolvimento correspondente.","Os testadores só entram após a codificação, para evitar retrabalho e reduzir custo.","Níveis diferentes têm objetivos diferentes, evitando redundância."],a:2,e:"Testador entra CEDO, revisando rascunhos. 'Só depois do código' é o contrário do shift-left."});
+add({id:"c2-3",ch:2,src:"Cap. 2 – Simulado 2",q:"Qual a sequência correta do TDD?",o:["Escrever testes → executar (FALHA) → escrever código → executar (SUCESSO) → refatorar.","Escrever código → escrever testes → executar → refatorar.","Escrever testes → executar (FALHA) → escrever código → refatorar.","Escrever código → testes (FALHA) → refatorar → executar."],a:0,e:"Vermelho → Verde → Refatora. O teste vem ANTES e falha primeiro."});
+add({id:"c2-4",ch:2,src:"Cap. 2 – Simulado 2",q:"Relacione: (1) TDD (2) ATDD (3) BDD com (A) testes de aceite definidos antes, a partir dos critérios de aceite, com negócio+dev+teste; (B) desenvolvimento guiado por testes automatizados que falham primeiro; (C) comportamento descrito em linguagem natural 'Dado/Quando/Então'.",o:["1B, 2A, 3C","1C, 2B, 3A","1A, 2C, 3B","1B, 2C, 3A"],a:0,e:"TDD = teste de código (unidade). ATDD = critérios de Aceite. BDD = Comportamento em Dado/Quando/Então."});
+add({id:"c2-5",ch:2,src:"Cap. 2 – Simulado 2",q:"Qual afirmação melhor descreve o teste em DevOps?",o:["Testes principalmente após a integração contínua.","Só testadores dedicados testam, antes da entrega.","Testes automatizados e integrados ao pipeline de entrega contínua, com feedback rápido.","Testes são evitados para acelerar."],a:2,e:"DevOps = pipeline CI/CD com testes automatizados dando feedback rápido."});
+add({id:"c2-6",ch:2,src:"Cap. 2 – Simulado 2",q:"São vantagens do DevOps? (S/N)<br>I) Lançamento mais rápido.<br>II) Aumenta testes manuais repetitivos.<br>III) Software executável sempre disponível.<br>IV) Reduz testes de regressão por refatoração.<br>V) Montar a automação é barato.",o:["S, S, N, S, N","N, N, S, N, S","N, S, N, S, S","S, N, S, N, N"],a:3,e:"Vantagens: rápido e sempre executável. Desvantagens/riscos: precisa de MAIS regressão e montar automação é CARO."});
+add({id:"c2-7",ch:2,src:"Cap. 2 – Simulado 2",q:"Muitos defeitos só apareciam no teste de aceite, perto da entrega. Qual ação alinha a equipe ao Shift-Left?",o:["Concentrar testes na homologação ao final.","Adiar automação.","Integrar teste desde o início: revisar requisitos e escrever casos antes do código.","Reduzir testadores no início."],a:2,e:"Shift-left = empurrar o teste para a ESQUERDA da linha do tempo (mais cedo)."});
+add({id:"c2-8",ch:2,src:"Cap. 2 – Simulado 2",q:"Na retrospectiva, a equipe discute problemas de comunicação e atrasos nos testes. Qual ação combina com o objetivo da retrospectiva?",o:["Adiar a retrospectiva.","Identificar causas e propor ações para melhorar o processo, incluindo os testes.","Focar só no código.","Avaliar desempenho individual e punir."],a:1,e:"Retrospectiva = o que foi bem, o que melhorar, ações concretas. Não é tribunal."});
+add({id:"c2-9",ch:2,src:"Cap. 2 – Simulado 2",q:"A equipe verifica se login e controle de acesso funcionam juntos com o banco de dados e o serviço de autenticação externo, buscando falhas nas interfaces. Qual nível?",o:["Unidade/componente.","Integração.","Sistema.","Aceite."],a:1,e:"Palavras-chave 'interfaces', 'interação', 'funcionam em conjunto' = integração."});
+add({id:"c2-10",ch:2,src:"Cap. 2 – Simulado 2",q:"Um programador cria testes automatizados para validar se a função de desconto retorna os valores esperados. Qual nível?",o:["Unidade ou componente.","Integração de componentes.","Sistema.","Aceite."],a:0,e:"Uma função isolada, feita pelo dev = componente (unidade)."});
+add({id:"c2-11",ch:2,src:"Cap. 2 – Simulado 2",q:"O testador verifica se a transferência responde corretamente a diferentes combinações de entrada. Qual tipo de teste?",o:["Funcional.","Não funcional.","Confirmação.","Manutenção."],a:0,e:"'O QUE o sistema faz' (resultado certo) = funcional. 'COMO faz' (rápido, usável, seguro) = não funcional."});
+add({id:"c2-12",ch:2,src:"Cap. 2 – Simulado 2",q:"Após corrigir um defeito, a equipe roda testes na função corrigida e depois em funções relacionadas para ver se nada quebrou. Quais tipos?",o:["Regressão seguido de funcional.","Confirmação seguido de não funcional.","Não funcional seguido de confirmação.","Confirmação seguido de regressão."],a:3,e:"Confirmação = 'o defeito sumiu?'. Regressão = 'quebrei outra coisa?'."});
+add({id:"c2-13",ch:2,src:"Cap. 2 – Simulado 2",q:"Requisito: 'o processamento de um pedido não deve exceder 10 segundos em 95% das tentativas'. O testador mediu tempos e comparou. Qual tipo de teste?",o:["Funcional, pois é experiência do usuário.","Não funcional, pois avalia eficiência de desempenho (tempo de resposta).","Caixa-preta, pois valida se pedidos são processados.","Caixa-branca, pois depende da lógica interna."],a:1,e:"Tempo, velocidade, carga = eficiência de desempenho = NÃO funcional. Pense 'quão bem', não 'o quê'."});
+add({id:"c2-14",ch:2,src:"Cap. 2 – Simulado 2",q:"Uma plataforma vai para nova versão do sistema operacional e integra uma biblioteca nova; outra equipe desliga um módulo legado. Quais fatores de manutenção estão presentes?",o:["Correção e atualização.","Modificação e verificação.","Melhoria e modificação.","Migração e aposentadoria."],a:3,e:"Mudar de plataforma = migração. Desligar módulo = aposentadoria. Gatilhos de manutenção: modificação, migração (atualização de ambiente) e aposentadoria."});
+// ===== BANCO DE QUESTÕES — parte 2 (Capítulo 3 e 4) =====
+// ---------- Capítulo 3 - Simulado 2 ----------
+add({id:"c3-1",ch:3,src:"Cap. 3 – Simulado 2",q:"Qual produto de trabalho NÃO pode ser examinado por testes estáticos?",o:["Especificação de requisitos (histórias de usuário).","Cartas de teste exploratório.","Documentação do projeto, contratos e modelos.","Código executável de terceiros."],a:3,e:"Estático = LER sem executar. Quase tudo pode ser lido/revisado, menos um executável (binário) de terceiros — esse só dá pra testar rodando."});
+add({id:"c3-2",ch:3,src:"Cap. 3 – Simulado 2",q:"Numa revisão de requisitos no início do projeto, um testador achou inconsistências nas regras de negócio. Qual o valor do teste estático aqui?",o:["Detecção precoce de defeitos e menor esforço geral de desenvolvimento.","Eliminação completa de defeitos.","Melhoria da usabilidade.","Eliminar todos os defeitos no aceite."],a:0,e:"Achar cedo = mais barato. 'Eliminar todos' é sempre errado."});
+add({id:"c3-3",ch:3,src:"Cap. 3 – Simulado 2",q:"Classifique:<br>I. Detecta desvios de padrões de codificação.<br>II. Identifica falhas ao executar com entradas específicas.<br>III. Detecta defeitos antes de executar.<br>IV. Identifica comportamentos incorretos durante a execução.<br>V. Detecta cedo requisitos de segurança não cobertos.",o:["Estático: II, IV; Dinâmico: I, III, V.","Estático: I, III, V; Dinâmico: II, IV.","Estático: I, III; Dinâmico: II, IV, V.","Estático: I, II, III; Dinâmico: IV, V."],a:1,e:"Se fala em 'execução', 'falha', 'comportamento' → dinâmico. Se fala em 'padrões', 'antes de executar' → estático."});
+add({id:"c3-4",ch:3,src:"Cap. 3 – Simulado 2",q:"Uma organização adotou revisões frequentes com testadores e stakeholders desde o início. Qual o principal benefício do feedback antecipado e frequente?",o:["Execução manual mais rápida.","Menos testes automatizados e licenças.","Comunicação precoce de problemas de qualidade, evitando mal-entendidos sobre requisitos.","Menos testes estáticos."],a:2,e:"Feedback cedo = evita mal-entendido de requisito."});
+add({id:"c3-5",ch:3,src:"Cap. 3 – Simulado 2",q:"O revisor comunica anomalias, recomendações e perguntas ao autor, que analisa e discute todos os problemas. Qual atividade do processo de revisão?",o:["Planejamento.","Início da revisão.","Comunicação e análise dos problemas.","Correção e relatório."],a:2,e:"Discutir as anomalias e decidir o que fazer com cada uma = comunicação e análise."});
+add({id:"c3-6",ch:3,src:"Cap. 3 – Simulado 2",q:"Relacione as atividades da revisão (1 Planejamento, 2 Início, 3 Revisão individual, 4 Comunicação e análise, 5 Correção e relatório) com:<br>(A) Analisar e discutir anomalias e decidir status/ações.<br>(B) Criar relatório de defeitos para acompanhar correções.<br>(C) Avaliar o produto e identificar anomalias aplicando técnicas de revisão.<br>(D) Definir escopo, objetivo, critérios de saída, esforço e prazos.<br>(E) Garantir que todos estejam preparados para começar.",o:["1A, 2B, 3C, 4D, 5E","1D, 2E, 3C, 4A, 5B","1D, 2E, 3C, 4B, 5A","1E, 2B, 3C, 4D, 5A"],a:1,e:"Ordem natural: Planeja (escopo) → Inicia (todo mundo pronto) → Cada um revisa → Discute → Corrige e reporta."});
+add({id:"c3-7",ch:3,src:"Cap. 3 – Simulado 2",q:"Qual função garante o andamento eficaz das reuniões de revisão, media conflitos, gerencia tempo e mantém um ambiente seguro para todos falarem?",o:["Moderador (facilitador).","Gerente.","Líder da revisão.","Revisor."],a:0,e:"Moderador = 'mediador' da reunião. Líder da revisão = responsável geral (quem participa, quando, onde)."});
+add({id:"c3-8",ch:3,src:"Cap. 3 – Simulado 2",q:"Um analista escreve os casos de teste e um testador revisa. Não há processo definido nem documento formal de resultado. Qual tipo de revisão?",o:["Inspeção.","Revisão técnica.","Walkthrough.","Revisão informal."],a:3,e:"Sem processo e sem documento = informal."});
+add({id:"c3-9",ch:3,src:"Cap. 3 – Simulado 2",q:"Uma instituição financeira auditada precisa revisar requisitos com processo completo, funções definidas e coleta de métricas. Qual tipo?",o:["Inspeção.","Revisão técnica.","Walkthrough.","Revisão informal."],a:0,e:"Mais formal de todas, com métricas = inspeção."});
+add({id:"c3-10",ch:3,src:"Cap. 3 – Simulado 2",q:"Qual fator contribui para uma revisão eficaz?",o:["Evitar revisões parciais.","Usar moderadores/facilitadores nas reuniões, sempre que possível.","Dar feedback só ao autor.","Permitir interrupções constantes."],a:1,e:"Fatores de sucesso: objetivos claros, partes pequenas, tempo adequado, facilitação, feedback para todos, ambiente seguro."});
+
+// ---------- Capítulo 4 - Simulado 2 ----------
+add({id:"c4-1",ch:4,src:"Cap. 4 – Simulado 2",q:"Qual o propósito de usar diferentes técnicas de teste na análise e modelagem?",o:["Escolher a técnica mais fácil.","Garantir repetibilidade e eliminar defeitos rápido.","Ter uma abordagem sistemática para criar um conjunto pequeno, mas suficiente, de casos de teste.","Só documentar para auditoria."],a:2,e:"Técnica = jeito organizado de testar MUITO com POUCOS casos."});
+add({id:"c4-2",ch:4,src:"Cap. 4 – Simulado 2",q:"Aluguel de carro por idade: Jovem 18–24, Padrão 25–60, Sênior 61–80; abaixo de 18 ou acima de 80 = rejeita. Qual conjunto dá a MELHOR cobertura de particionamento de equivalência?",o:["18, 24, 25, 60, 61, 80","20, 25, 50, 70, 80","18, 26, 61, 80, 85","15, 22, 55, 75, 85"],a:3,e:"São 5 partições: <18 | 18–24 | 25–60 | 61–80 | >80. Precisa de 1 valor em CADA uma. Só a (d) cobre todas (15, 22, 55, 75, 85)."});
+add({id:"c4-3",ch:4,src:"Cap. 4 – Simulado 2",q:"Voltagem nominal 110V com tolerância de 5% para cima e para baixo. Usando BVA de 2 pontos e variação de 0,1V, quais valores testar?",o:["104,4V, 104,5V, 115,5V e 115,6V","104V, 105V, 115V e 116V","100V, 110V e 120V","104,4V, 104,5V, 110V, 115,5V e 115,6V"],a:0,e:"5% de 110 = 5,5 → faixa 104,5 a 115,5. BVA 2 pontos = o limite + o vizinho de fora: 104,4 | 104,5 e 115,5 | 115,6."});
+add({id:"c4-4",ch:4,src:"Cap. 4 – Simulado 2",q:"Mesma rede (110V ± 5%, variação 0,1V). Agora com BVA de 3 pontos, quais valores?",o:["104,4V, 104,5V, 115,5V e 115,6V","104,5V, 110V e 115,5V","104,4V, 104,5V, 104,6V, 115,4V, 115,5V e 115,6V","104,3V, 104,5V, 104,7V, 115,3V, 115,5V e 115,7V"],a:2,e:"BVA 3 pontos = vizinho antes + limite + vizinho depois, em cada limite. 3 × 2 limites = 6 valores."});
+add({id:"c4-5",ch:4,src:"Cap. 4 – Simulado 2",q:"Regra: acesso permitido SOMENTE se o usuário tiver 18+ E cadastro válido. Qual combinação mostra uma decisão INCORRETA do sistema?",o:["18+ e cadastro válido → permitido","18+ e cadastro inválido → permitido","Menor de 18 e cadastro válido → negado","Menor de 18 e cadastro inválido → negado"],a:1,e:"Com 'E', basta uma condição falsa para negar. Cadastro inválido tinha que ser NEGADO."});
+add({id:"c4-6",ch:4,src:"Cap. 4 – Simulado 2",img:"estadosAG",q:"Um caso de teste percorre: Estado A → B → C → G → C → B → A. Qual a cobertura de TODOS OS ESTADOS? (arredonde)",o:["20%","30%","40%","60%"],a:3,e:"Conte estados DIFERENTES visitados: A, B, C, G = 4. Total no diagrama: 7 (A a G). 4/7 ≈ 57% → 60%."});
+add({id:"c4-7",ch:4,src:"Cap. 4 – Simulado 2",img:"estadosAF",q:"Qual o número mínimo de casos de teste para cobrir todas as transições válidas, começando e terminando em A?",o:["2","3","4","5"],a:2,e:"Cada volta a A encerra o caso. Precisa: A→A | A→B→C→A | A→B→C→D→A | A→B→C→D→F→A = 4."});
+add({id:"c4-8",ch:4,src:"Cap. 4 – Simulado 2",q:"Tabela de estados (login):<br><table class='tb'><tr><th>Estado</th><th>Evento</th><th>Condição</th><th>Vai para</th></tr><tr><td>Desconectado</td><td>Login</td><td>Sucesso</td><td>Logado</td></tr><tr><td>Desconectado</td><td>Login</td><td>Falha</td><td>Desconectado</td></tr><tr><td>Logado</td><td>Logout</td><td>–</td><td>Desconectado</td></tr><tr><td>(*) Logado</td><td>Login</td><td>–</td><td>Logado</td></tr><tr><td>(*) Desconectado</td><td>Logout</td><td>–</td><td>Desconectado</td></tr></table>(*) = transição inválida.<br>Caso de teste a partir de Desconectado: 1) Login sucesso 2) Logout 3) Login falha 4) Logout (inválido). Qual a cobertura de TODAS as transições?",o:["100%","80%","60%","40%"],a:1,e:"'Todas as transições' conta válidas + inválidas = 5. O caso passou por 4 (sucesso, logout, falha, logout inválido). Faltou 'login estando logado'. 4/5 = 80%."});
+add({id:"c4-9",ch:4,src:"Cap. 4 – Simulado 2",img:"fluxoAJ",q:"Um caso de teste percorreu A-B-C-D-E-F. Qual a cobertura de INSTRUÇÃO?",o:["30%","40%","50%","60%"],a:3,e:"Cada caixa = 1 instrução. São 10 (A até J). Visitou 6 (A, B, C, D, E, F). 6/10 = 60%."});
+add({id:"c4-10",ch:4,src:"Cap. 4 – Simulado 2",img:"fluxoAJ",q:"O mesmo caso A-B-C-D-E-F. Qual a cobertura de RAMIFICAÇÃO (decisão)?",o:["30%","40%","50%","60%"],a:2,e:"Ramificações = saídas das caixas que têm 2 caminhos. B→C, B→I, C→D, C→G = 4. O caso usou B→C e C→D = 2. 2/4 = 50%."});
+add({id:"c4-11",ch:4,src:"Cap. 4 – Simulado 2",q:"<pre>contador = 0\nread contador\nif contador >= 0\n   print(\"maior ou igual a zero\")\nendif</pre>Quantos casos para 100% de cobertura de INSTRUÇÃO?",o:["1","2","3","4"],a:0,e:"Um valor ≥ 0 passa por todas as linhas. 1 caso basta."});
+add({id:"c4-12",ch:4,src:"Cap. 4 – Simulado 2",q:"Mesmo código (if contador >= 0 ... endif). Quantos casos para 100% de cobertura de RAMIFICAÇÃO?",o:["1","2","3","4"],a:1,e:"Precisa ir pelo 'sim' (≥0) e pelo 'não' (negativo) do if = 2 casos."});
+add({id:"c4-13",ch:4,src:"Cap. 4 – Simulado 2",q:"Especificação ambígua e incompleta; a equipe usa teste caixa-branca. Qual um ponto forte e um ponto fraco da caixa-branca?",o:["Forte: detecta requisitos não implementados. Fraco: considera só parte da implementação.","Forte: acha defeitos mesmo com especificação vaga. Fraco: pode não detectar requisitos que não foram implementados.","Forte: valida o usuário final. Fraco: não mede cobertura.","Forte: só teste dinâmico. Fraco: ineficaz para pseudocódigo."],a:1,e:"Caixa-branca olha o CÓDIGO: funciona sem boa especificação, mas não enxerga o que NUNCA foi codificado."});
+add({id:"c4-14",ch:4,src:"Cap. 4 – Simulado 2",q:"Testador experiente em segurança cria cenários para entradas e sequências historicamente vulneráveis, onde erros comuns de programação costumam ocorrer. Qual técnica?",o:["Teste exploratório.","Baseado em checklist.","Suposição de erro.","Teste de usabilidade."],a:2,e:"'Por experiência, sei onde costuma dar erro' = suposição de erro (error guessing)."});
+add({id:"c4-15",ch:4,src:"Cap. 4 – Simulado 2",q:"Módulo experimental, pouca documentação, prazo curto, o testador precisa aprender rápido e achar defeitos inesperados sem modelagem detalhada. Qual técnica?",o:["Teste exploratório.","Checklist.","Suposição de erro.","Análise de valor limite."],a:0,e:"Pouca documentação + pouco tempo + aprender enquanto testa = exploratório."});
+add({id:"c4-16",ch:4,src:"Cap. 4 – Simulado 2",q:"No aceite de um checkout, o testador usa uma lista pré-definida de itens (usabilidade, consistência visual, padrões) vinda de experiência e boas práticas. Qual afirmação descreve essa técnica?",o:["Só serve para regressão.","São roteiros rígidos sem variação.","Exigem conhecimento de programação.","Ajudam a lembrar de verificar aspectos importantes, como guia sistemático."],a:3,e:"Checklist = lembrete organizado do que não pode esquecer."});
+add({id:"c4-17",ch:4,src:"Cap. 4 – Simulado 2",q:"Qual o principal benefício da escrita colaborativa de histórias de usuário e critérios de aceite?",o:["Só o negócio cria os testes de aceite.","Entendimento compartilhado entre negócio, desenvolvimento e teste.","Elimina documentação.","Pula o planejamento."],a:1,e:"Escrever junto = todo mundo entende a mesma coisa."});
+add({id:"c4-18",ch:4,src:"Cap. 4 – Simulado 2",q:"Qual o propósito dos Critérios de Aceite?",o:["Definir requisitos não funcionais.","Listar bugs conhecidos.","Condições que devem ser satisfeitas para a funcionalidade ser considerada pronta e correta.","Passos de um caso de teste manual."],a:2,e:"Critério de aceite = 'quando isso tudo for verdade, está pronto'."});
+add({id:"c4-19",ch:4,src:"Cap. 4 – Simulado 2",q:"No ATDD, quando os testes de aceite são elaborados?",o:["Antes de implementar o código, para guiar o desenvolvimento.","Depois do desenvolvimento e testes de unidade.","Durante os testes de sistema.","Na manutenção."],a:0,e:"ATDD = Acceptance Test DRIVEN → o teste vem antes e guia."});
+add({id:"c4-20",ch:4,src:"Cap. 4 – Simulado 2",q:"Quais são os '3C' das histórias de usuário?",o:["Cartão, Conversação e Confirmação.","Cartão, Conversação e Combinação.","Cartão, Comunicação e Confirmação.","Cartão, Comunicação e Combinação."],a:0,e:"Cartão (onde escreve), Conversação (explicação), Confirmação (critérios de aceite). Cuidado: é ConverSAção, não Comunicação."});
+// ===== BANCO DE QUESTÕES — parte 3 (Simulado Completo 1) =====
+const S1 = "Simulado Completo 1";
+add({id:"s1-1",ch:1,sim:1,src:S1,q:"Qual das afirmações descreve um objetivo de teste válido?",o:["Provar que não existem defeitos não corrigidos.","Provar que não haverá falhas em produção.","Reduzir o nível de risco do objeto de teste e aumentar a confiança no nível de qualidade.","Verificar que não existem combinações de entradas não testadas."],a:2,e:"'Provar que não existe' é impossível. Teste reduz risco e aumenta confiança."});
+add({id:"s1-2",ch:1,sim:1,src:S1,q:"Qual alternativa mostra atividades de teste que contribuem para o sucesso?",o:["Testadores envolvidos em várias atividades do SDLC ajudam a detectar defeitos nos produtos de trabalho.","Testadores evitam perturbar os devs durante a codificação.","Testadores com usuários finais melhoram relatórios de defeitos na integração.","Testadores certificados fazem casos muito melhores."],a:0,e:"Testador envolvido cedo e em tudo = defeitos achados antes."});
+add({id:"s1-3",ch:1,sim:1,src:S1,q:"Nenhuma alteração foi feita nos testes de regressão por várias iterações e nenhum novo defeito de regressão apareceu. O gerente está feliz; você, cético. Qual princípio explica seu ceticismo?",o:["Os testes se degradam.","Falácia da ausência de defeitos.","Os defeitos se agrupam.","Testes exaustivos são impossíveis."],a:0,e:"Mesmos testes repetidos param de achar coisa nova."});
+add({id:"s1-4",ch:1,sim:1,src:S1,q:"Na funcionalidade de pagamento de um app de comida, qual atividade é da ANÁLISE de teste?",o:["Estimar que testar a integração levará 8 dias.","Decidir que a equipe deve testar se é possível dividir o pagamento entre vários usuários.","Usar BVA para derivar dados do valor mínimo a pagar.","Analisar diferença entre esperado e real e relatar defeito."],a:1,e:"Decidir O QUE testar = condição de teste = Análise. Estimar = Planejamento. Usar técnica (BVA) = Modelagem. Relatar defeito = Execução."});
+add({id:"s1-5",ch:1,sim:1,src:S1,q:"Quais fatores têm influência SIGNIFICATIVA no processo de teste?<br>(i) SDLC (ii) nº de defeitos de projetos anteriores (iii) riscos do produto (iv) novos requisitos regulatórios (v) nº de testadores certificados",o:["i e ii","i, iii e iv","ii, iv e v","iii e v"],a:1,e:"Contexto que pesa: ciclo de vida, riscos e regulamentação. Histórico de defeitos e certificados não mudam o processo em si."});
+add({id:"s1-6",ch:1,sim:1,src:S1,q:"Quais DUAS tarefas pertencem PRINCIPALMENTE ao papel de teste?<br>(i) Configurar ambientes de teste (ii) Manter o backlog (iii) Projetar soluções para requisitos (iv) Criar o plano de teste (v) Relatar a cobertura alcançada",o:["i e iv","i e v","iii e iv","ii e iii"],a:1,e:"Papel de TESTE = mão na massa (ambiente, execução, cobertura). Plano de teste = papel de GESTÃO de teste."});
+add({id:"s1-7",ch:1,sim:1,src:S1,q:"Quais habilidades são as MAIS importantes de um testador?<br>(i) Conhecimento de domínio (ii) Criar visão do produto (iii) Ser bom membro de equipe (iv) Planejar o trabalho da equipe (v) Pensamento crítico",o:["ii e iv","i, iii e v","i, ii e v","iii e iv"],a:1,e:"Domínio, trabalho em equipe e pensamento crítico. Visão do produto é do negócio; planejar a equipe é do gestor."});
+add({id:"s1-8",ch:1,sim:1,src:S1,q:"Como a abordagem de equipe completa aparece entre testadores e representantes de negócio?",o:["Negócio decide a automação.","Testadores ajudam o negócio a definir a estratégia de teste.","Negócio não faz parte da equipe completa.","Testadores ajudam o negócio a criar testes de aceite adequados."],a:3,e:"Testador + negócio = juntos nos testes de aceite."});
+add({id:"s1-9",ch:2,sim:1,src:S1,q:"'Para cada atividade do SDLC há uma atividade de teste correspondente.' Em quais modelos isso vale?",o:["Só sequenciais.","Só iterativos.","Só iterativos e incrementais.","Sequenciais, incrementais e iterativos."],a:3,e:"É uma boa prática universal: vale para TODOS."});
+add({id:"s1-10",ch:2,sim:1,src:S1,q:"Qual afirmação descreve MELHOR o ATDD?",o:["Critérios de aceite geralmente em Dado/Quando/Então.","Casos criados no teste de componente, orientados ao código.","Testes criados a partir dos critérios de aceite para orientar o desenvolvimento.","Testes baseados no comportamento desejado, fácil de entender."],a:2,e:"(a) e (d) = BDD. (b) = TDD. (c) = ATDD."});
+add({id:"s1-11",ch:2,sim:1,src:S1,q:"Qual NÃO é exemplo de Shift-Left?",o:["Revisar requisitos antes de aceitos.","Escrever teste de componente antes do código.","Teste de desempenho de um componente já no teste de componente.","Escrever script de teste antes de configurar o gerenciamento de configuração."],a:3,e:"Script de teste precisa estar sob gerenciamento de configuração. Fazer antes disso não é shift-left, é bagunça."});
+add({id:"s1-12",ch:2,sim:1,src:S1,q:"Qual argumento usar para convencer o gerente a fazer retrospectivas ao fim de cada ciclo?",o:["São populares e os clientes gostam.","Economizam dinheiro porque usuários não dão feedback.","As fraquezas identificadas viram lista de tarefas para a melhoria contínua de processos.","Adotam cinco valores como coragem e respeito."],a:2,e:"Retrospectiva = melhoria contínua. (d) fala de valores do XP."});
+add({id:"s1-13",ch:2,sim:1,src:S1,q:"Relacione falhas com níveis:<br>1. Sistema se desvia das necessidades de negócio do usuário<br>2. Falhas na comunicação entre componentes<br>3. Falha de lógica em um módulo<br>4. Regras de negócio implementadas errado<br>A. Componente B. Integração de componentes C. Sistema D. Aceite",o:["1D, 2B, 3A, 4C","1D, 2B, 3C, 4A","1B, 2A, 3D, 4C","1C, 2B, 3A, 4D"],a:0,e:"Necessidade do usuário = aceite. Comunicação = integração. Lógica de módulo = componente. Regras de negócio = sistema."});
+add({id:"s1-14",ch:2,sim:1,src:S1,q:"TC1 cobre AC1, TC2 cobre AC2, TC3 cobre AC3. Histórico:<br><table class='tb'><tr><th></th><th>Execução 1</th><th>Execução 2</th><th>Execução 3</th></tr><tr><td>TC1</td><td>(1) Falhou</td><td>(4) Aprovado</td><td>(7) Aprovado</td></tr><tr><td>TC2</td><td>(2) Aprovado</td><td>(5) Falhou</td><td>(8) Aprovado</td></tr><tr><td>TC3</td><td>(3) Falhou</td><td>(6) Falhou</td><td>(9) Aprovado</td></tr></table>Os testes são repetidos após correção dos defeitos. Quais foram executados como REGRESSÃO?",o:["Somente 4, 7, 8, 9","Somente 5, 7","Somente 4, 6, 8, 9","Somente 5, 6"],a:1,e:"Se o teste FALHOU antes, a próxima execução é CONFIRMAÇÃO. Se PASSOU antes, a próxima é REGRESSÃO. TC2 passou em (2) → (5) é regressão. TC1 passou em (4) → (7) é regressão."});
+add({id:"s1-15",ch:3,sim:1,src:S1,q:"Qual NÃO é um benefício dos testes estáticos?",o:["Gerenciamento de defeitos menos caro por ser fácil detectar defeitos mais tarde no SDLC.","Corrigir defeitos do estático é mais barato que do dinâmico.","Encontrar defeitos de código que o dinâmico não acharia.","Detectar lacunas e inconsistências nos requisitos."],a:0,e:"Achar MAIS TARDE é MAIS caro. A (a) inverte a lógica."});
+add({id:"s1-16",ch:3,sim:1,src:S1,q:"Qual é um benefício do feedback antecipado e frequente?",o:["Melhora o processo para projetos futuros.","Obriga clientes a priorizar por risco.","É a única forma de medir qualidade das mudanças.","Ajuda a evitar mal-entendidos de requisitos."],a:3,e:"Resposta clássica: evita mal-entendido de requisito."});
+add({id:"s1-17",ch:3,sim:1,src:S1,q:"Revisões com: 1) papel de redator 2) objetivo principal é avaliar qualidade 3) reunião conduzida pelo AUTOR 4) preparação individual 5) relatório gerado. Qual tipo é MAIS provável?",o:["Revisão informal.","Walkthrough.","Revisão técnica.","Inspeção."],a:1,e:"Dica de ouro: AUTOR conduzindo a reunião = WALKTHROUGH. Na inspeção o autor NÃO pode liderar."});
+add({id:"s1-18",ch:3,sim:1,src:S1,q:"Qual NÃO é fator de sucesso para revisões?",o:["Tempo adequado para revisar.","Dividir produtos grandes em partes menores.","Evitar comportamentos de tédio ou hostilidade.","As falhas encontradas devem ser reconhecidas, apreciadas e tratadas objetivamente."],a:3,e:"Pegadinha: revisão acha DEFEITOS, não FALHAS (falha só aparece executando)."});
+add({id:"s1-19",ch:4,sim:1,src:S1,q:"Qual é característica das técnicas baseadas em experiência?",o:["Casos criados a partir de design detalhado.","Cobertura medida por itens do código.","Dependem muito do conhecimento do testador sobre o software e o domínio.","Casos usados para achar desvios dos requisitos."],a:2,e:"(a)(b) = caixa-branca. (d) = caixa-preta. (c) = experiência."});
+add({id:"s1-20",ch:4,sim:1,src:S1,q:"Busca de apartamentos: Andar (térreo; 1º; 2º ou mais) e Jardim (sem; pequeno; grande). Só térreo tem jardim; o formulário bloqueia combinações inválidas. Mínimo de casos para 100% de partições de equivalência?",o:["3","4","5","6"],a:1,e:"Jardim pequeno e grande só existem no térreo → 2 casos com térreo. Faltam 1º e 2º+ (com 'sem jardim') → mais 2. Total 4."});
+add({id:"s1-21",ch:4,sim:1,src:S1,q:"Notas: 0–50 Reprovado | 51–60 Razoável | 61–70 Satisfatório | 71–80 Bom | 81–90 Muito bom | 91–100 Excelente. Casos: 91, 50, 81, 60, 70, 51. Qual a cobertura de BVA de 2 valores?",o:["50%","60%","33,3%","100%"],a:0,e:"Liste os limites: 0, 50, 51, 60, 61, 70, 71, 80, 81, 90, 91, 100 = 12. Os casos acertam 6 deles. 6/12 = 50%."});
+add({id:"s1-22",ch:4,sim:1,src:S1,q:"Aluguel de bicicletas: qualquer um aluga, membros têm 20% de desconto; se atrasar a devolução, perde o desconto; após 15 aluguéis, membros ganham camiseta.<br><table class='tb'><tr><th>Condições</th><th>R1</th><th>R2</th><th>R3</th><th>R4</th><th>R5</th><th>R6</th><th>R7</th><th>R8</th></tr><tr><td>É membro</td><td>T</td><td>T</td><td>T</td><td>T</td><td>F</td><td>F</td><td>F</td><td>F</td></tr><tr><td>Prazo não cumprido</td><td>T</td><td>F</td><td>T</td><td>F</td><td>T</td><td>F</td><td>F</td><td>T</td></tr><tr><td>15º aluguel</td><td>F</td><td>F</td><td>T</td><td>T</td><td>F</td><td>F</td><td>T</td><td>T</td></tr><tr><th>Ações</th><td colspan=8></td></tr><tr><td>20% desconto</td><td></td><td>X</td><td></td><td>X</td><td></td><td></td><td></td><td></td></tr><tr><td>Camiseta</td><td></td><td></td><td>X</td><td>X</td><td></td><td></td><td></td><td>X</td></tr></table>Qual regra descreve uma situação impossível?",o:["R4","R2","R6","R8"],a:3,e:"R8 dá camiseta para quem NÃO é membro. Só membro ganha camiseta → impossível."});
+add({id:"s1-23",ch:4,sim:1,src:S1,img:"init",q:"O sistema começa em INIT e termina em OFF. Qual o NÚMERO MÍNIMO de casos de teste para cobrir todas as transições válidas?",o:["4","2","7","3"],a:3,e:"'test' e 'run' saem do INIT — não cabem no mesmo caso. E há dois 'done' diferentes. TC1: test, done | TC2: run, error, done | TC3: run, pause, resume, pause, done → 3."});
+add({id:"s1-24",ch:4,sim:1,src:S1,q:"Sua suíte alcançou 100% de cobertura de instrução. Qual a consequência?",o:["Cada instrução com defeito foi executada ao menos uma vez.","Qualquer suíte maior também terá 100%.","Cada caminho foi executado.","Cada combinação de entrada foi testada."],a:0,e:"100% instrução = toda linha rodou, inclusive as que têm defeito. Não significa todos os caminhos nem todas as entradas."});
+add({id:"s1-25",ch:4,sim:1,src:S1,q:"Qual afirmação NÃO é verdadeira para o teste caixa-branca?",o:["Toda a implementação do software é considerada.","Métricas de cobertura ajudam a criar testes adicionais.","Técnicas caixa-branca podem ser usadas em teste estático.","O teste caixa-branca pode ajudar a identificar lacunas na implementação dos requisitos."],a:3,e:"Caixa-branca olha o código que EXISTE. Se o requisito nunca foi codificado, ela não vê a lacuna — isso é fraqueza dela. (c) é verdadeira: dá para revisar código/pseudocódigo."});
+add({id:"s1-26",ch:4,sim:1,src:S1,q:"O que MELHOR descreve a suposição de erro?",o:["Usar conhecimento e experiência de defeitos passados e erros típicos dos devs.","Usar sua experiência pessoal como desenvolvedor.","Imaginar-se usuário e adivinhar erros do usuário.","Refazer a tarefa de desenvolvimento."],a:0,e:"Suposição de erro = 'já vi esse tipo de erro antes, vou procurar ali'."});
+add({id:"s1-27",ch:4,sim:1,src:S1,q:"Lançamento atrasado, testes começaram tarde, você conhece bem o domínio, a lista completa de requisitos não chegou e a gerência quer resultados logo. Qual técnica se encaixa MELHOR?",o:["Checklist.","Suposição de erro.","Teste exploratório.","Teste de ramificações."],a:2,e:"Pouca especificação + pressa = exploratório."});
+add({id:"s1-28",ch:4,sim:1,src:S1,q:"Qual MELHOR descreve como documentar critérios de aceite?",o:["Fazer retrospectivas.","Usar o formato Dado/Quando/Então para descrever uma condição de exemplo da história.","Comunicação verbal.","Documentar riscos no plano de teste."],a:1,e:"Critério de aceite é escrito — e Dado/Quando/Então é o formato padrão."});
+add({id:"s1-29",ch:4,sim:1,src:S1,q:"História: 'Como Editor, quero revisar o conteúdo antes de publicar para garantir a gramática.' Critérios: login como Editor; ver páginas; EDITAR conteúdo; adicionar comentários; SALVAR alterações; reatribuir 'proprietário do conteúdo' a outro editor. Qual o MELHOR teste ATDD?",o:["Testar se o editor pode salvar o documento após deletar o conteúdo da página.","Testar se o proprietário do conteúdo pode logar e atualizar.","Testar se o editor pode programar a publicação.","Testar se o editor pode atribuir a outro editor para fazer atualizações."],a:0,e:"Teste ATDD tem que sair DOS CRITÉRIOS. (a) cobre 'editar' + 'salvar'. (d) parece, mas o critério fala em reatribuir a função de PROPRIETÁRIO, não 'atribuir a outro editor'."});
+add({id:"s1-30",ch:5,sim:1,src:S1,q:"Como os testadores agregam valor ao planejamento de iteração e lançamento?",o:["Determinam a prioridade das histórias.","Focam só no funcional.","Participam da identificação e avaliação detalhada de riscos das histórias.","Garantem qualidade pelo design antecipado de testes."],a:2,e:"Testador no planejamento: ajuda a achar riscos, estimar, definir testabilidade. Prioridade é do negócio."});
+add({id:"s1-31",ch:5,sim:1,src:S1,q:"Quais DUAS são critérios de SAÍDA?<br>(1) Ambiente de teste pronto (2) Testador consegue logar (3) Densidade de defeitos estimada atingida (4) Requisitos em Dado/Quando/Então (5) Testes de regressão automatizados",o:["2 e 3","2 e 4","4 e 5","3 e 5"],a:3,e:"Entrada = 'posso começar?' (ambiente, acesso, requisitos prontos). Saída = 'posso terminar?' (métricas atingidas, regressão automatizada)."});
+add({id:"s1-32",ch:5,sim:1,src:S1,q:"Estimativa de três pontos: otimista 2h, mais provável 11h, pessimista 14h. Qual a estimativa final?",o:["9","14","11","10"],a:3,e:"Fórmula: (O + 4×M + P) / 6 = (2 + 44 + 14) / 6 = 60/6 = 10."});
+add({id:"s1-33",ch:5,sim:1,src:S1,q:"Casos (menor número = maior prioridade):<br><table class='tb'><tr><th>Caso</th><th>Condição</th><th>Prioridade</th><th>Depende de</th></tr><tr><td>TC001</td><td>Selecionar tipo de comida</td><td>3</td><td>–</td></tr><tr><td>TC002</td><td>Selecionar restaurante</td><td>2</td><td>TC001</td></tr><tr><td>TC003</td><td>Obter direção</td><td>1</td><td>TC002</td></tr><tr><td>TC004</td><td>Ligar para o restaurante</td><td>2</td><td>TC002</td></tr><tr><td>TC005</td><td>Fazer reserva</td><td>3</td><td>TC002</td></tr></table>Qual deve ser o TERCEIRO a executar?",o:["TC003","TC005","TC002","TC004"],a:0,e:"Primeiro as dependências: TC001 → TC002. Depois, entre os liberados, a maior prioridade (menor número): TC003."});
+add({id:"s1-34",ch:5,sim:1,src:S1,q:"Encaixe nos quadrantes ágeis: (1) Usabilidade (2) Componente (3) Funcional (4) Confiabilidade<br>(A) Q1: tecnologia, apoia a equipe (B) Q2: negócio, apoia a equipe (C) Q3: negócio, critica o produto (D) Q4: tecnologia, critica o produto",o:["1C, 2A, 3B, 4D","1D, 2A, 3C, 4B","1C, 2B, 3D, 4A","1D, 2B, 3C, 4A"],a:0,e:"Q1 componente | Q2 funcional | Q3 usabilidade/exploratório/UAT | Q4 não funcional técnico (desempenho, confiabilidade, segurança)."});
+add({id:"s1-35",ch:5,sim:1,src:S1,q:"Risco: tempo de resposta longo para gerar relatório (probabilidade média, impacto alto). Resposta: equipe independente faz teste de desempenho e usuários fazem alfa e beta. Que medida é essa?",o:["Aceite de risco.","Plano de contingência.","Mitigação de risco.","Transferência de risco."],a:2,e:"Testar para reduzir o risco = MITIGAÇÃO."});
+add({id:"s1-36",ch:5,sim:1,src:S1,q:"Qual ferramenta mostra o trabalho concluído e o restante em uma iteração?",o:["Critérios de aceite.","Relatório de defeitos.","Relatório de conclusão de testes.","Gráfico de Burndown."],a:3,e:"Burndown = trabalho restante × tempo, atualizado todo dia."});
+add({id:"s1-37",ch:5,sim:1,src:S1,q:"Você precisa atualizar um script automatizado por causa de um requisito novo. Qual processo indica criar uma nova versão no repositório?",o:["Rastreabilidade.","Teste de manutenção.","Gerenciamento de configuração.","Engenharia de requisitos."],a:2,e:"Versão de artefato = gerenciamento de configuração."});
+add({id:"s1-38",ch:5,sim:1,src:S1,q:"Relatório: 'Aplicativo desliga ao inserir \"Test input: Sã\" no campo Nome da tela de novo usuário. Testei com várias contas admin. Log em anexo com erro fatal. Pelo TC-1305 deveria aceitar e criar o usuário. Alta prioridade, ligado ao REQ-0012.' Os devs disseram que não reproduz. O que está FALTANDO?",o:["Resultado esperado e real.","Referências e status.","Ambiente de teste e item de teste (versão).","Prioridade e gravidade."],a:2,e:"Esperado/real, referências e prioridade estão lá. Falta ONDE (ambiente) e O QUÊ (qual app/versão). Sem isso, não dá pra reproduzir."});
+add({id:"s1-39",ch:6,sim:1,src:S1,q:"Qual atividade é apoiada por uma ferramenta de preparação de dados de teste?",o:["Monitoramento e controle.","Análise e modelagem.","Implementação e execução.","Conclusão."],a:2,e:"Dados de teste são criados na Implementação (deixar tudo pronto para executar)."});
+add({id:"s1-40",ch:6,sim:1,src:S1,q:"Qual é um potencial RISCO da automação de testes?",o:["Pode introduzir regressões desconhecidas em produção.","Esforço para manter o testware pode não ser alocado adequadamente.","Ferramentas podem não ser confiáveis.","Pode reduzir o tempo de testes manuais."],a:1,e:"Riscos clássicos: expectativa irreal, subestimar esforço de manutenção, depender demais da ferramenta, fornecedor sumir. Reduzir teste manual é BENEFÍCIO."});
+// ===== BANCO DE QUESTÕES — parte 4 (Simulado Completo 2 + extras) =====
+// Gabarito resolvido com base no Syllabus CTFL 4.0.
+const S2 = "Simulado Completo 2 (gabarito resolvido)";
+add({id:"s2-1",ch:1,sim:2,src:S2,q:"Qual alternativa está INCORRETA sobre os objetivos típicos do teste?",o:["Avaliar produtos de trabalho como requisitos, histórias, projetos e código.","Comparar os resultados esperados com os resultados reais do objeto de teste.","Garantir a cobertura necessária de um objeto de teste.","Reduzir o nível de risco de qualidade inadequada."],a:1,e:"Comparar esperado × real é uma ATIVIDADE da execução, não um objetivo do teste. Os outros três estão na lista de objetivos do Syllabus."});
+add({id:"s2-2",ch:1,sim:2,src:S2,q:"Qual alternativa está INCORRETA sobre teste e depuração?",o:["São atividades distintas.","O teste encontra falhas e a depuração encontra as causas.","Quando o teste estático identifica um defeito, a depuração se preocupa em removê-lo.","Teste e depuração devem ser executados juntos para ser mais eficiente."],a:3,e:"São complementares, mas separados. Não 'devem ser feitos juntos'. A (c) está no Syllabus: no estático, a depuração só remove o defeito."});
+add({id:"s2-3",ch:1,sim:2,src:S2,q:"Muitas organizações chamam a área de testes de 'Controle de Qualidade (CQ)'. Está correto?",o:["Sim, porque o teste é uma das principais formas de Controle de Qualidade.","Sim, porque o CQ é preventivo.","Não, deveria ser Garantia de Qualidade porque o teste cuida da qualidade geral.","Não, deveria ser Garantia de Qualidade porque o teste pode ser estático e dinâmico."],a:0,e:"Teste é forma de QC. E QC é corretivo (não preventivo) — por isso (b) está errada."});
+add({id:"s2-4",ch:1,sim:2,src:S2,q:"O PO entendeu errado a necessidade do cliente e documentou isso numa história de usuário, que foi desenvolvida e entregue. O cliente reclamou. O que existe na DOCUMENTAÇÃO da história?",o:["Erro.","Defeito.","Falha.","Causa-raiz."],a:1,e:"O PO se enganar = erro (humano). O que ficou escrito errado no documento = DEFEITO. Defeito pode estar em qualquer produto de trabalho, não só no código."});
+add({id:"s2-5",ch:1,sim:2,src:S2,q:"Qual princípio, em alguns casos, pode dar resultado benéfico quando NÃO o seguimos?",o:["Testes exaustivos são impossíveis.","Testes antecipados economizam tempo e dinheiro.","Os testes se degradam.","Os testes dependem do contexto."],a:2,e:"O Syllabus diz: repetir os mesmos testes às vezes é bom — ex.: regressão automatizada. Então 'não atualizar' pode ser útil nesse caso."});
+add({id:"s2-6",ch:1,sim:2,src:S2,q:"Associe grupos de atividades com produtos de trabalho:<br>I Planejamento · II Monitoramento e controle · III Análise · IV Modelagem · V Implementação · VI Execução · VII Conclusão<br>A Relatório de progresso · B Relatório de defeitos do software · C Condições de teste · D Casos de teste · E Lista de riscos · F Elementos do ambiente de teste · G Lições aprendidas",o:["I-E, II-A, III-C, IV-D, V-F, VI-B, VII-G","I-E, II-A, III-D, IV-C, V-F, VI-B, VII-G","I-D, II-A, III-C, IV-E, V-F, VI-B, VII-G","I-D, II-G, III-C, IV-E, V-F, VI-B, VII-A"],a:0,e:"Planejamento→riscos; Monitoramento→progresso; Análise→condições; Modelagem→casos; Implementação→ambiente; Execução→defeitos; Conclusão→lições."});
+add({id:"s2-7",ch:1,sim:2,src:S2,q:"Qual NÃO é benefício da rastreabilidade entre base de teste e testware?",o:["Verificar se os requisitos são cobertos pelos casos.","Avaliar o risco residual a partir dos resultados ligados aos riscos.","Determinar impacto de mudanças, facilitar auditorias e governança de TI.","Determinar o AUTOR dos defeitos na base de teste e no software."],a:3,e:"Rastreabilidade não serve para caçar culpado."});
+add({id:"s2-8",ch:1,sim:2,src:S2,q:"Qual alternativa está CORRETA sobre independência dos testes?",o:["Um certo grau de DEPENDÊNCIA torna o testador mais eficaz.","O principal benefício é que testadores independentes reconhecem tipos diferentes de falhas e defeitos, pelos vieses cognitivos diferentes.","Com independência, os autores não devem testar o próprio trabalho.","Deve-se usar um único nível de independência no projeto inteiro."],a:1,e:"Olhar de fora enxerga coisas diferentes. Autores podem sim testar (teste de componente pelo dev) e normalmente se usam vários níveis de independência."});
+add({id:"s2-38",ch:1,sim:2,src:S2,q:"Em que grupo de atividades o relatório de CONCLUSÃO de teste é elaborado?",o:["Monitoramento e controle.","Implementação.","Execução.","Conclusão do teste."],a:3,e:"O nome já entrega: relatório de conclusão → Conclusão."});
+add({id:"s2-9",ch:2,sim:2,src:S2,q:"Em qual abordagem os testes são escritos primeiro, depois o código para satisfazê-los e, em seguida, testes e código são refatorados?",o:["ATDD","BDD","TDD","DevOps"],a:2,e:"Escreve teste → código → refatora = TDD."});
+add({id:"s2-10",ch:2,sim:2,src:S2,q:"Num projeto em Cascata, qual tarefa NÃO é possível?",o:["Teste estático assim que os requisitos estiverem escritos.","Teste dinâmico desde o início do projeto.","Análise de teste antes do código ficar pronto.","Modelagem de teste antes do código ficar pronto."],a:1,e:"Dinâmico precisa de código rodando — no cascata ele só existe no fim."});
+add({id:"s2-11",ch:2,sim:2,src:S2,q:"Em qual nível de teste se usam estratégias de integração como bottom-up, top-down ou big-bang?",o:["Integração entre componentes.","Sistema.","Integração entre sistemas.","Aceite."],a:0,e:"Montar componentes de baixo pra cima, de cima pra baixo ou tudo de uma vez = integração de componentes."});
+add({id:"s2-12",ch:2,sim:2,src:S2,q:"Você vai verificar se o software é fácil de usar, amigável e autoexplicativo. Que teste é esse?",o:["Funcional – Compatibilidade.","Funcional – Usabilidade.","Não funcional – Compatibilidade.","Não funcional – Usabilidade."],a:3,e:"Usabilidade é característica NÃO funcional."});
+add({id:"s2-13",ch:2,sim:2,src:S2,q:"Um software em produção vai ser modificado e você teme efeitos colaterais em várias partes. Após análise de impacto, que testes fará?",o:["Confirmação.","Regressão.","Fumaça (smoke).","Integração."],a:1,e:"Medo de quebrar o que já funcionava = regressão."});
+add({id:"s2-14",ch:2,sim:2,src:S2,q:"Quais são as principais formas de teste de aceite previstas no Syllabus?<br>i. Aceite de usuário · ii. Aceite operacional · iii. Contratual e normativo · iv. Alfa · v. Beta",o:["i, ii, iii, iv e v","i, iii, iv e v","i, ii, iv e v","i, ii e iii"],a:0,e:"As cinco: UAT, operacional, contratual/regulatório, alfa e beta."});
+add({id:"s2-15",ch:3,sim:2,src:S2,q:"Sua responsabilidade na revisão é garantir reuniões eficazes, mediação, gestão do tempo e ambiente seguro. Qual sua função?",o:["Gerente.","Líder de teste.","Moderador ou Facilitador.","Revisor."],a:2,e:"Moderador/facilitador."});
+add({id:"s2-16",ch:3,sim:2,src:S2,q:"Qual é o tipo de revisão MAIS FORMAL, com processo completo, todas as funções, e o autor NÃO pode ser líder nem relator?",o:["Walkthrough.","Inspeção.","Auditoria.","Revisão técnica."],a:1,e:"Inspeção. (Auditoria nem está entre os tipos de revisão do Syllabus.)"});
+add({id:"s2-17",ch:3,sim:2,src:S2,q:"Qual NÃO é exemplo de defeito identificável no teste estático?",o:["Inconsistências nas histórias com regras e critérios de aceite.","Vulnerabilidades específicas (ex.: estouro de buffer).","Código executável (binário) do software.","Desvios de padrões de codificação."],a:2,e:"Binário não dá pra 'ler' — só executando."});
+add({id:"s2-18",ch:3,sim:2,src:S2,q:"Em qual atividade do processo de revisão é criado um relatório de defeitos para cada defeito, para acompanhar as correções?",o:["Início da revisão.","Revisão individual.","Comunicação e análise de problemas.","Correção e relatório."],a:3,e:"Correção e relatório: cria relatório de defeito, acompanha correções, reporta resultado."});
+add({id:"s2-19",ch:5,sim:2,src:S2,q:"App de agendamento de reuniões (menor número = maior prioridade):<br><table class='tb'><tr><th>ID</th><th>Descrição</th><th>Prioridade</th><th>Depende de</th></tr><tr><td>01.001</td><td>Reservar sala</td><td>4</td><td>01.004</td></tr><tr><td>01.002</td><td>Levantar participantes</td><td>2</td><td>–</td></tr><tr><td>01.003</td><td>Agendar reunião</td><td>1</td><td>01.001</td></tr><tr><td>01.004</td><td>Verificar disponibilidade</td><td>3</td><td>01.002</td></tr><tr><td>01.005</td><td>Enviar convite</td><td>1</td><td>01.003</td></tr></table>Qual deve ser o QUINTO a executar?",o:["01.001","01.003","01.004","01.005"],a:3,e:"Siga a corrente de dependências: 002 → 004 → 001 → 003 → 005. O quinto é 01.005."});
+add({id:"s2-20",ch:4,sim:2,src:S2,q:"Contêiner deve aceitar cargas de 25.000 kg a 100.000 kg. Valores MÍNIMOS para particionamento de equivalência (variação de 1 t)?",o:["24.999, 25.000, 100.000 e 100.001 kg","24.000, 25.000, 100.000 e 101.000 kg","15.000, 50.000 e 150.000 kg","24.000, 25.000, 26.000, 99.000, 100.000 e 101.000 kg"],a:2,e:"PE = 1 valor por partição: abaixo (15 t), dentro (50 t), acima (150 t). Valores colados no limite são coisa de BVA."});
+add({id:"s2-21",ch:4,sim:2,src:S2,q:"Mesmo contêiner (25 t a 100 t, variação 1 t). Valores de BVA de 2 valores?",o:["24.999, 25.000, 100.000 e 100.001 kg","24.000, 25.000, 100.000 e 101.000 kg","15.000, 50.000 e 150.000 kg","24.000, 25.000, 26.000, 99.000, 100.000 e 101.000 kg"],a:1,e:"Limite + vizinho de fora, com passo de 1 t (1.000 kg): 24.000 | 25.000 e 100.000 | 101.000. A (a) usa passo de 1 kg — errado pelo enunciado."});
+add({id:"s2-22",ch:4,sim:2,src:S2,q:"Mesmo contêiner. Valores de BVA de 3 valores?",o:["24.999, 25.000, 100.000 e 100.001 kg","24.000, 25.000, 100.000 e 101.000 kg","15.000, 50.000 e 150.000 kg","24.000, 25.000, 26.000, 99.000, 100.000 e 101.000 kg"],a:3,e:"Vizinho antes + limite + vizinho depois, nos dois limites = 6 valores."});
+add({id:"s2-25",ch:4,sim:2,src:S2,q:"'Quando o código tem só um único if, sem loop nem CASE, qualquer caso de teste único resulta em 50% de cobertura de ramificação.' Qual alternativa está correta?",o:["Verdadeira. Qualquer caso dá 100% de instrução e portanto 50% de ramificação.","Verdadeira. Qualquer caso único faz o if dar verdadeiro OU falso.","Falsa. Um caso só garante 25%.","Falsa. Depende do software."],a:1,e:"Um if tem 2 saídas. Um caso passa por UMA delas → 1/2 = 50%. A (a) erra porque um caso nem sempre dá 100% de instrução (se cair no 'falso' pula o corpo do if)."});
+add({id:"s2-26",ch:4,sim:2,src:S2,q:"Bônus se trabalhar mais de 1 ano E atingir uma meta previamente acordada.<br><table class='tb'><tr><th>Condição</th><th colspan=4>Valores</th></tr><tr><td>Mais de 1 ano</td><td>Sim</td><td>Não</td><td>Não</td><td>Sim</td></tr><tr><td>Meta acordada</td><td>Não</td><td>Não</td><td>Sim</td><td>Sim</td></tr><tr><td>Meta atingida</td><td>Não</td><td>Não</td><td>Sim</td><td>Sim</td></tr><tr><th>Ação (bônus)</th><td>Não</td><td>Não</td><td>Não</td><td>Sim</td></tr></table>Qual caso representa uma situação REAL que está AUSENTE na tabela?",o:["Cond1=Sim, Cond2=Não, Cond3=Sim, Ação=Não","Cond1=Sim, Cond2=Sim, Cond3=Não, Ação=Sim","Cond1=Não, Cond2=Não, Cond3=Sim, Ação=Não","Cond1=Não, Cond2=Sim, Cond3=Não, Ação=Não"],a:3,e:"Não dá pra atingir meta que não foi acordada → (a) e (c) são impossíveis. (b) é possível mas a ação está errada (não atingiu = sem bônus). (d): menos de 1 ano, meta acordada, não atingida, sem bônus — real e falta na tabela."});
+add({id:"s2-27",ch:4,sim:2,src:S2,img:"bomba",q:"Bomba de gasolina (só cartão). Cada teste começa em 'Aguardando cliente' e termina quando uma transição chega de volta nele. Mínimo de casos para cobrir todas as TRANSIÇÕES válidas?",o:["1","3","4","7"],a:2,e:"Toda volta ao início encerra o teste, então cada 'volta' é um caso: cartão inválido | válido→cancelar | válido→tipo→cancelar | válido→tipo→injetar→finalizar = 4."});
+add({id:"s2-28",ch:4,sim:2,src:S2,img:"bomba",q:"Mesma bomba. Mínimo de casos para cobrir todos os ESTADOS?",o:["1","3","4","7"],a:0,e:"Um único caminho completo (válido → tipo → injetar → finalizar) passa pelos 4 estados."});
+add({id:"s2-29",ch:4,sim:2,src:S2,q:"Quais são os três aspectos críticos das histórias de usuário (3C)?",o:["Cartão, conversação e confirmação.","Cartão, comunicação e confirmação.","Carta, conversação e confirmação.","Carta, comunicação e confirmação."],a:0,e:"Cartão, Conversação, Confirmação."});
+add({id:"s2-30",ch:5,sim:2,src:S2,q:"Qual é exemplo de critério de ENTRADA?",o:["Nível de cobertura alcançado.","Todos os testes de fumaça passaram.","Testes planejados foram executados.","Número de riscos mitigados."],a:1,e:"Smoke test passou = 'dá pra começar a testar de verdade'. Os outros medem o FIM (saída)."});
+add({id:"s2-31",ch:5,sim:2,src:S2,q:"Três pontos: otimista 5h, mais provável 8h, pessimista 17h. Estimativa final?",o:["7 horas","8 horas","9 horas","10 horas"],a:2,e:"(5 + 4×8 + 17) / 6 = 54 / 6 = 9."});
+add({id:"s2-32",ch:5,sim:2,src:S2,q:"Estimativa por extrapolação para a 4ª iteração, com: 1ª = 43, 2ª = 50, 3ª = 60 pontos.",o:["51","55","63","70"],a:0,e:"Extrapolação aqui = média das anteriores: (43+50+60)/3 = 51."});
+add({id:"s2-33",ch:5,sim:2,src:S2,q:"Em que quadrante estão os testes geralmente de responsabilidade dos desenvolvedores?",o:["Q1","Q2","Q3","Q4"],a:0,e:"Q1 = testes de componente e integração de componente, voltados à tecnologia, feitos pelos devs."});
+add({id:"s2-34",ch:5,sim:2,src:S2,q:"Técnica baseada em experiência em que os testes são modelados, executados e avaliados simultaneamente. Qual é e em que quadrante está?",o:["Suposição de erro – Q2","Suposição de erro – Q3","Exploratório – Q2","Exploratório – Q3"],a:3,e:"Tudo ao mesmo tempo = exploratório. Está no Q3 (negócio, crítica ao produto)."});
+add({id:"s2-35",ch:5,sim:2,src:S2,q:"Qual é exemplo de risco de PROJETO?",o:["Problemas de usabilidade por usuários desconhecidos.","Redução de custo devido à concorrência com outros projetos.","Tempo de resposta inadequado por muitos acessos simultâneos.","Vulnerabilidade de segurança por mudanças de escopo."],a:1,e:"Risco de projeto = gestão (prazo, custo, pessoas, fornecedor). Risco de produto = qualidade do software (usabilidade, desempenho, segurança)."});
+add({id:"s2-37",ch:5,sim:2,src:S2,q:"Em que grupo de atividades o relatório de PROGRESSO é elaborado?",o:["Planejamento.","Monitoramento e controle.","Análise.","Modelagem."],a:1,e:"Acompanhar o andamento = monitoramento e controle."});
+add({id:"s2-39",ch:6,sim:2,src:S2,q:"Como classificar ferramentas de CI (Integração Contínua) e CD (Entrega Contínua)?",o:["Gerenciamento.","Teste não funcional.","Colaboração.","DevOps."],a:3,e:"Pipeline CI/CD = ferramenta de DevOps."});
+add({id:"s2-40",ch:6,sim:2,src:S2,q:"Qual pode ser considerado um risco da automação?",o:["Expectativas irreais sobre os benefícios da ferramenta, incluindo funcionalidade e facilidade de uso.","A ferramenta entrar em 'looping' por inteligência.","A ferramenta introduzir testes desconhecidos que afetam desempenho.","A ferramenta introduzir dados que interferem nos testes manuais."],a:0,e:"Expectativa irreal é o risco nº 1 da lista do Syllabus."});
+
+// ---------- EXTRA (para reforçar Cap. 5 e 6, reforço) ----------
+const EX = "Extra – reforço (Syllabus)";
+add({id:"ex-1",ch:5,src:EX,q:"Um risco tem probabilidade ALTA e impacto ALTO. O que isso significa para o teste?",o:["Pode ser ignorado.","Deve receber mais atenção e teste mais cedo e mais profundo.","Deve ir para o fim da fila.","Só deve ser tratado na conclusão."],a:1,e:"Nível de risco = probabilidade × impacto. Quanto maior, mais cedo e mais teste."});
+add({id:"ex-2",ch:5,src:EX,q:"Quais são as 4 respostas possíveis a um risco (controle de risco)?",o:["Mitigar, aceitar, transferir, plano de contingência.","Planejar, analisar, modelar, executar.","Ignorar, esconder, adiar, cancelar.","Identificar, avaliar, testar, liberar."],a:0,e:"Mitigar (reduzir, ex.: testando), Aceitar, Transferir (seguro, terceiro), Contingência (plano B)."});
+add({id:"ex-3",ch:5,src:EX,q:"Qual é exemplo de risco de PRODUTO?",o:["Atraso na entrega do fornecedor.","Falta de pessoal qualificado.","Cálculo errado de juros no sistema.","Corte de orçamento."],a:2,e:"Produto = defeito/qualidade do software. Os outros são riscos de projeto."});
+add({id:"ex-4",ch:5,src:EX,q:"Na pirâmide de testes, o que fica na BASE?",o:["Testes de ponta a ponta pela interface (lentos).","Muitos testes pequenos, rápidos e isolados (unidade/componente).","Testes exploratórios manuais.","Testes de aceite do usuário."],a:1,e:"Base larga = muitos testes de unidade, rápidos e baratos. Topo estreito = poucos testes E2E, lentos."});
+add({id:"ex-5",ch:5,src:EX,q:"Qual é o propósito do gerenciamento de configuração no teste?",o:["Definir prioridades de negócio.","Identificar, controlar e versionar itens de teste e testware, garantindo rastreabilidade.","Medir produtividade.","Aprovar liberações."],a:1,e:"Saber exatamente QUAL versão de cada coisa foi testada."});
+add({id:"ex-6",ch:5,src:EX,q:"Qual métrica é típica do monitoramento de teste?",o:["Salário da equipe.","Percentual de casos executados, aprovados e falhados.","Número de reuniões.","Quantidade de e-mails."],a:1,e:"Métricas: progresso de execução, cobertura, defeitos (quantidade, densidade), custo."});
+add({id:"ex-7",ch:5,src:EX,q:"Estimativa baseada em RAZÃO: no projeto anterior a relação dev:teste foi 3:2. Agora o esforço de desenvolvimento é 600 pessoa-dia. Estimativa de teste?",o:["200","300","400","900"],a:2,e:"600 × 2/3 = 400 pessoa-dia."});
+add({id:"ex-8",ch:5,src:EX,q:"O que é o Wideband Delphi?",o:["Uma técnica de estimativa por especialistas em rodadas até chegar a consenso.","Uma ferramenta de automação.","Um tipo de revisão.","Um nível de teste."],a:0,e:"Especialistas estimam separadamente, discutem e repetem até convergir. O Planning Poker é uma variação."});
+add({id:"ex-9",ch:5,src:EX,q:"O que um relatório de defeito deve ter para ser útil?",o:["Só o título.","Identificador, título, ambiente, passos para reproduzir, resultado esperado e real, gravidade/prioridade, status.","Apenas a opinião do testador.","Somente o nome do dev culpado."],a:1,e:"O objetivo é permitir que alguém REPRODUZA e corrija. Ambiente e versão são essenciais."});
+add({id:"ex-10",ch:6,src:EX,q:"Qual é um BENEFÍCIO da automação de testes?",o:["Elimina a necessidade de pensar.","Reduz trabalho manual repetitivo e aumenta a consistência/repetibilidade.","Ferramentas nunca falham.","Configurar a automação é barato."],a:1,e:"Benefícios: menos repetição manual, mais consistência, medidas objetivas, feedback mais rápido."});
+add({id:"ex-11",ch:6,src:EX,q:"Ferramentas que ajudam a gerenciar requisitos, testes, defeitos e configuração pertencem a qual categoria?",o:["Ferramentas de gerenciamento.","Ferramentas de teste estático.","Ferramentas de teste não funcional.","Ferramentas de colaboração."],a:0,e:"Gerenciamento: SDLC, requisitos, testes, defeitos, configuração."});
+add({id:"ex-12",ch:6,src:EX,q:"Uma ferramenta de análise estática de código ajuda em quê?",o:["Executar testes de carga.","Encontrar problemas no código SEM executá-lo (padrões, vulnerabilidades, complexidade).","Gerar dados de teste.","Criar gráficos de burndown."],a:1,e:"Estático = sem executar."});
+// ===== CONTEÚDO DE ESTUDO =====
+const CHAPTERS = [
+ {n:1, t:"Fundamentos de Teste", icon:"🧱", peso:8, cards:[
+  {h:"Por que testar?", b:"Teste serve para <b>achar defeitos</b>, <b>reduzir risco</b>, <b>dar informação</b> para decidir e <b>aumentar a confiança</b>. Ele nunca prova que não há defeitos."},
+  {h:"Teste × Depuração", b:"<b>Teste</b> mostra que algo está errado (revela a falha).<br><b>Depuração</b> acha a causa e conserta (reproduz → diagnostica → corrige).<br>São atividades diferentes."},
+  {h:"QA × QC", b:"<b>QC (Controle de Qualidade)</b> = olha o <b>produto</b>, é <b>corretivo</b>. O <b>teste é uma forma de QC</b>.<br><b>QA (Garantia da Qualidade)</b> = olha o <b>processo</b>, é <b>preventivo</b>."},
+  {h:"A cadeia do problema", b:"<b>Causa-raiz</b> (por que aconteceu: pressa, suposição, falta de info) → <b>Erro</b> (a pessoa se engana) → <b>Defeito</b> (fica gravado no código ou documento) → <b>Falha</b> (o que você VÊ acontecer ao executar).<br>🧠 Macete: <i>pessoa erra, papel/código tem defeito, sistema falha.</i>"},
+  {h:"Os 7 princípios", b:"1. Teste mostra presença, não ausência de defeitos.<br>2. Teste exaustivo é impossível.<br>3. Testar cedo economiza.<br>4. Defeitos se agrupam (80/20).<br>5. Testes se degradam (repetir os mesmos para de achar coisa nova).<br>6. Teste depende do contexto.<br>7. Falácia da ausência de defeitos (sem defeito ≠ útil ao usuário)."},
+  {h:"Processo de teste (7 grupos)", b:"<b>Planejamento</b> → objetivos, abordagem, riscos, plano.<br><b>Monitoramento e controle</b> → acompanha o tempo todo, relatório de progresso.<br><b>Análise</b> → O QUE testar (condições de teste).<br><b>Modelagem</b> → COMO testar (casos de teste, itens de cobertura, dados e ambiente necessários).<br><b>Implementação</b> → deixa pronto: procedimentos, scripts, suítes, dados, ambiente, cronograma de execução.<br><b>Execução</b> → roda, compara esperado × real, registra, reporta defeitos.<br><b>Conclusão</b> → relatório de conclusão, lições aprendidas, arquiva testware."},
+  {h:"Testware e rastreabilidade", b:"<b>Testware</b> = TUDO que o processo de teste produz (plano, condições, casos, dados, scripts, relatórios...).<br><b>Rastreabilidade</b> = ligar base de teste ↔ testware. Serve para medir cobertura, avaliar impacto de mudanças e risco residual, e ajudar em auditoria. Não serve para achar culpado."},
+  {h:"Papéis e habilidades", b:"Dois papéis: <b>gestão de teste</b> (planeja, monitora, conclui) e <b>teste</b> (analisa, modela, implementa, executa). Papel ≠ cargo: qualquer um pode assumir.<br>Habilidades: conhecimento de domínio, pensamento crítico/analítico, comunicação, trabalho em equipe, curiosidade."},
+  {h:"Equipe completa e independência", b:"<b>Equipe completa</b>: qualidade é responsabilidade de todos; testador ajuda o negócio a criar testes de aceite e os devs a pensar em testes.<br><b>Independência</b>: quem não escreveu enxerga defeitos diferentes (vieses diferentes). Mas muita independência pode isolar e atrasar."}
+ ], traps:["Resultado errado na tela é FALHA, não defeito.","'Provar que não há defeitos' / 'garantir todos' → alternativa errada.","Análise = condições. Modelagem = casos. Não troque!","Levantar riscos com probabilidade/impacto para decidir abordagem = Planejamento."]},
+
+ {n:2, t:"Teste no Ciclo de Vida", icon:"🔄", peso:6, cards:[
+  {h:"SDLC influencia o teste", b:"<b>Sequencial (cascata/V)</b>: no início só dá teste <b>estático</b> (revisões); dinâmico só quando há código.<br><b>Iterativo/incremental/ágil</b>: cada iteração entrega algo → estático e dinâmico em todos os níveis, muita regressão."},
+  {h:"Boas práticas (valem para qualquer SDLC)", b:"• Toda atividade de desenvolvimento tem uma de teste.<br>• Cada nível tem objetivo próprio (evita redundância).<br>• Análise e modelagem começam junto com a fase correspondente.<br>• Testador revisa rascunhos assim que existem."},
+  {h:"TDD, ATDD, BDD", b:"<b>TDD</b>: teste de código primeiro → falha → código → passa → refatora.<br><b>ATDD</b>: testes de aceite criados ANTES, a partir dos critérios de aceite, com negócio+dev+teste.<br><b>BDD</b>: comportamento em linguagem natural <i>Dado / Quando / Então</i>."},
+  {h:"DevOps e Shift-left", b:"<b>DevOps</b>: pipeline CI/CD, testes automatizados, feedback rápido, software sempre executável. Riscos: montar automação é caro, precisa de MAIS regressão.<br><b>Shift-left</b>: testar mais cedo — revisar requisitos, escrever testes antes do código, análise estática, CI."},
+  {h:"Retrospectivas", b:"Ao fim da iteração: o que deu certo, o que melhorar, ações concretas. Alimentam a melhoria contínua. Não é para punir ninguém."},
+  {h:"Níveis de teste", b:"<b>Componente</b> (unidade isolada, geralmente pelo dev).<br><b>Integração de componentes</b> (interfaces entre partes; top-down, bottom-up, big-bang).<br><b>Sistema</b> (sistema inteiro, regras de negócio, funcional e não funcional).<br><b>Integração de sistemas</b> (com outros sistemas/serviços externos).<br><b>Aceite</b> (atende o usuário/negócio? UAT, operacional, contratual/regulatório, alfa, beta)."},
+  {h:"Tipos de teste", b:"<b>Funcional</b> = O QUE faz.<br><b>Não funcional</b> = QUÃO BEM faz (desempenho, usabilidade, segurança, confiabilidade, compatibilidade...).<br><b>Caixa-preta</b> = baseado na especificação.<br><b>Caixa-branca</b> = baseado na estrutura/código."},
+  {h:"Confirmação × Regressão", b:"<b>Confirmação</b>: o defeito corrigido sumiu? (reexecuta o teste que falhou).<br><b>Regressão</b>: a mudança quebrou algo que funcionava? (roda testes que passavam)."},
+  {h:"Teste de manutenção", b:"Gatilhos: <b>modificação</b> (melhorias, correções), <b>migração/atualização</b> de ambiente ou plataforma, <b>aposentadoria</b> (desligar sistema/módulo — testar migração e arquivamento de dados). Sempre com análise de impacto."}
+ ], traps:["Tempo de resposta/desempenho = NÃO funcional.","'Interfaces', 'funcionam juntos' = integração.","Teste que falhou antes → próxima execução é confirmação. Que passou antes → regressão.","Dado/Quando/Então = BDD (ou formato de critério de aceite), não é a definição de ATDD."]},
+
+ {n:3, t:"Teste Estático", icon:"📄", peso:4, cards:[
+  {h:"O que é", b:"Examinar produtos de trabalho <b>sem executar</b>: revisões (manuais) e análise estática (ferramenta). Quase tudo pode ser revisado: requisitos, histórias, código, planos, contratos, modelos... menos um executável (binário) de terceiros."},
+  {h:"Por que vale a pena", b:"Acha defeitos <b>cedo e barato</b>, encontra coisas que o dinâmico não acha (código morto, desvio de padrão, requisito ambíguo), melhora a comunicação e evita mal-entendidos."},
+  {h:"Estático × Dinâmico", b:"<b>Estático</b> acha DEFEITOS diretamente (sem executar).<br><b>Dinâmico</b> provoca FALHAS e daí se chega ao defeito.<br>🧠 Revisão nunca acha 'falha'."},
+  {h:"Processo de revisão (5 atividades)", b:"1. <b>Planejamento</b>: escopo, objetivo, critérios de saída, esforço, prazo.<br>2. <b>Início</b>: todos preparados, com acesso ao material.<br>3. <b>Revisão individual</b>: cada um revisa e anota anomalias.<br>4. <b>Comunicação e análise</b>: discute as anomalias e decide o que fazer.<br>5. <b>Correção e relatório</b>: relatório de defeitos, correções, resultado."},
+  {h:"Funções na revisão", b:"<b>Gerente</b>: decide o que revisar, dá recursos (gente e tempo).<br><b>Autor</b>: cria e corrige o produto.<br><b>Moderador/facilitador</b>: faz a reunião funcionar, media, controla tempo, ambiente seguro.<br><b>Relator</b>: junta as anomalias e registra decisões.<br><b>Revisor</b>: revisa.<br><b>Líder da revisão</b>: responsabilidade geral, decide quem participa, quando e onde."},
+  {h:"Tipos de revisão (do menos ao mais formal)", b:"<b>Informal</b>: sem processo, sem documento.<br><b>Walkthrough</b>: <u>conduzido pelo autor</u>; educar, gerar ideias, avaliar qualidade.<br><b>Revisão técnica</b>: revisores técnicos, liderada por moderador; consenso e decisões técnicas.<br><b>Inspeção</b>: a mais formal, processo completo, <u>coleta métricas</u>, autor NÃO pode ser líder nem relator."},
+  {h:"Fatores de sucesso", b:"Objetivos claros, partes pequenas, tempo adequado, facilitação, feedback para todos, ambiente seguro, treinamento, apoio da gestão."}
+ ], traps:["Autor conduzindo = walkthrough.","Métricas + mais formal = inspeção.","Revisões acham defeitos, não falhas.","Executável de terceiros não dá para testar estaticamente."]},
+
+ {n:4, t:"Técnicas de Teste", icon:"🧪", peso:11, cards:[
+  {h:"3 famílias", b:"<b>Caixa-preta</b> (especificação): partição de equivalência, valor limite, tabela de decisão, transição de estados.<br><b>Caixa-branca</b> (estrutura): instrução e ramificação.<br><b>Experiência</b>: suposição de erro, exploratório, checklist."},
+  {h:"Partição de equivalência (PE)", b:"Divide os valores em grupos que o sistema trata igual. Testa <b>1 valor por partição</b> (válidas E inválidas).<br>Ex.: idade 18–60 válida → partições: &lt;18 | 18–60 | &gt;60 → 3 testes (ex.: 10, 30, 70).<br>Cobertura = partições testadas ÷ total."},
+  {h:"Valor limite (BVA)", b:"Testa as bordas das partições.<br><b>2 valores</b>: o limite + o vizinho do outro lado. Faixa 18–60: 17, 18, 60, 61.<br><b>3 valores</b>: vizinho antes + limite + vizinho depois. 17, 18, 19, 59, 60, 61.<br>⚠️ Use o passo que o enunciado mandar (0,1 V, 1 t, 1 ponto...)."},
+  {h:"Tabela de decisão", b:"Para regras com <b>combinação de condições</b>. Cada coluna = uma regra (combinação) → ação. Com N condições booleanas há até 2ᴺ colunas. Fique atento a combinações <b>impossíveis</b> e a ações erradas."},
+  {h:"Transição de estados", b:"Estados + eventos que mudam de estado.<br><b>Todos os estados</b>: visitar cada estado.<br><b>Transições válidas</b> (0-switch): passar por cada seta válida.<br><b>Todas as transições</b>: válidas + inválidas.<br>Cobertura = itens cobertos ÷ total. Se 'voltar ao início encerra o caso', cada volta = 1 caso."},
+  {h:"Cobertura de instrução", b:"Cada linha/caixa executável = 1 instrução. Cobertura = instruções executadas ÷ total.<br>100% instrução ≠ 100% ramificação."},
+  {h:"Cobertura de ramificação (decisão)", b:"Cada saída de uma decisão (if: sim e não) = 1 ramificação. Cobertura = ramificações exercitadas ÷ total.<br>✅ 100% de ramificação garante 100% de instrução (o contrário não).<br>Um if sozinho: 1 caso = 50% de ramificação."},
+  {h:"Valor da caixa-branca", b:"Forte: considera toda a implementação, funciona mesmo com especificação ruim, mede cobertura objetiva, dá para usar em revisão de código.<br>Fraco: <b>não acha requisito que nunca foi implementado</b>."},
+  {h:"Baseadas em experiência", b:"<b>Suposição de erro</b>: 'já vi esse erro antes' — ataque de falhas, listas de erros comuns.<br><b>Exploratório</b>: aprende, modela e executa AO MESMO TEMPO; ótimo com pouca documentação e pouco tempo (sessões com carta de teste).<br><b>Checklist</b>: lista de itens para lembrar de verificar."},
+  {h:"Abordagem colaborativa", b:"<b>História de usuário 3C</b>: Cartão, Conversação, Confirmação (critérios de aceite).<br>Boa história: INVEST.<br><b>Critério de aceite</b>: condições para estar 'pronto' (formato cenário Dado/Quando/Então ou lista de regras).<br><b>ATDD</b>: testes de aceite escritos antes, a partir dos critérios, guiando o desenvolvimento."}
+ ], traps:["PE: precisa de valor em TODAS as partições, inclusive as inválidas.","BVA: conte cada limite. Faixa com 6 notas = 12 limites.","Cobertura de estados conta estados DIFERENTES, não repetições.","'Todas as transições' inclui as inválidas; 'transições válidas' não.","Caixa-branca não acha o que não foi codificado."]},
+
+ {n:5, t:"Gerenciamento do Teste", icon:"📊", peso:9, cards:[
+  {h:"Plano de teste", b:"Documenta objetivos, escopo, abordagem, recursos, cronograma, riscos, critérios de entrada/saída, orçamento, comunicação."},
+  {h:"Critérios de entrada e saída", b:"<b>Entrada</b> (posso começar?): ambiente pronto, acesso, requisitos testáveis, smoke test passou.<br><b>Saída</b> (posso terminar?): cobertura atingida, densidade de defeitos, testes planejados executados, regressão automatizada.<br>No ágil: Definição de Pronto (DoR) e Definição de Feito (DoD)."},
+  {h:"Estimativas", b:"<b>Razão</b>: usa proporção histórica (dev:teste).<br><b>Extrapolação</b>: projeta a partir de dados anteriores (ex.: média das iterações).<br><b>Wideband Delphi / Planning Poker</b>: especialistas até consenso.<br><b>Três pontos</b>: E = (O + 4M + P) ÷ 6."},
+  {h:"Priorização de casos", b:"Baseada em <b>risco</b>, em <b>cobertura</b> ou em <b>requisitos</b>. Mas as <b>dependências</b> vêm primeiro: não dá para rodar um teste antes do que ele depende."},
+  {h:"Pirâmide e quadrantes", b:"<b>Pirâmide</b>: base = muitos testes de unidade (rápidos); topo = poucos E2E (lentos).<br><b>Quadrantes</b>: Q1 tecnologia/apoia equipe (componente) · Q2 negócio/apoia equipe (funcional, histórias, protótipos) · Q3 negócio/critica produto (exploratório, usabilidade, UAT) · Q4 tecnologia/critica produto (desempenho, segurança, confiabilidade)."},
+  {h:"Risco", b:"Nível de risco = <b>probabilidade × impacto</b>.<br><b>Projeto</b>: prazo, custo, pessoas, fornecedor, organização.<br><b>Produto</b>: qualidade do software (defeitos, desempenho, usabilidade, segurança).<br>Resposta: <b>mitigar</b> (ex.: testar), aceitar, transferir, plano de contingência."},
+  {h:"Monitoramento, controle e relatórios", b:"<b>Monitorar</b>: coletar métricas e comparar com o plano. <b>Controlar</b>: agir para corrigir o rumo.<br>Relatório de <b>progresso</b> (durante) × relatório de <b>conclusão</b> (no fim).<br>Burndown: trabalho restante × tempo."},
+  {h:"Gerenciamento de configuração", b:"Identifica, versiona e controla itens de teste e testware. Garante que se sabe qual versão foi testada."},
+  {h:"Relatório de defeito", b:"Objetivo: dar informação para reproduzir e corrigir. Contém: ID, título, data/autor, <b>item de teste e ambiente</b>, contexto, passos, esperado × real, gravidade, prioridade, status, referências."}
+ ], traps:["Três pontos: (O + 4M + P) / 6 — o 'mais provável' vale 4x.","Dependência manda mais que prioridade.","Exploratório e usabilidade = Q3. Componente = Q1.","Testar para reduzir risco = mitigação.","Risco de custo/prazo/equipe = projeto."]},
+
+ {n:6, t:"Ferramentas de Teste", icon:"🛠️", peso:2, cards:[
+  {h:"Tipos de ferramentas", b:"Gerenciamento (requisitos, testes, defeitos, configuração) · Teste estático · Modelagem e implementação (inclui preparação de dados) · Execução e cobertura · Não funcional (carga, desempenho) · <b>DevOps</b> (pipeline CI/CD) · Colaboração · Virtualização e conteinerização."},
+  {h:"Benefícios da automação", b:"Menos trabalho manual repetitivo, mais consistência e repetibilidade, medidas objetivas (cobertura), feedback mais rápido, libera testadores para testes mais inteligentes."},
+  {h:"Riscos da automação", b:"<b>Expectativas irreais</b> sobre a ferramenta · subestimar tempo/custo/esforço de introdução e <b>manutenção</b> do testware · usar ferramenta quando manual seria melhor · depender demais da ferramenta · fornecedor sumir · ferramenta open source abandonada · incompatibilidade com a plataforma."}
+ ], traps:["Reduzir teste manual é BENEFÍCIO, não risco.","CI/CD = ferramenta de DevOps.","Preparar dados = apoio à implementação."]}
+];
+
+// ===== FLASHCARDS (glossário essencial) =====
+const FLASH = [
+ ["Erro","Ação humana que produz um resultado incorreto (a pessoa se engana)."],
+ ["Defeito","Imperfeição num produto de trabalho (código, documento) que faz ele não atender ao requisito."],
+ ["Falha","Evento em que o sistema não faz o que deveria — é o que se observa ao executar."],
+ ["Causa-raiz","A origem de um defeito; se removida, esse tipo de defeito some ou diminui."],
+ ["Depuração","Encontrar, analisar e remover a causa de uma falha (reproduzir, diagnosticar, corrigir)."],
+ ["Testware","Todos os produtos de trabalho gerados pelo processo de teste."],
+ ["Base de teste","O conhecimento usado para analisar e modelar testes (requisitos, histórias, código...)."],
+ ["Condição de teste","Aspecto testável do objeto de teste (O QUE testar) — sai da Análise."],
+ ["Caso de teste","Pré-condições, entradas, ações e resultados esperados (COMO testar) — sai da Modelagem."],
+ ["Procedimento de teste","Sequência de casos de teste em ordem de execução — sai da Implementação."],
+ ["Suíte (conjunto) de teste","Grupo de scripts ou procedimentos a executar juntos."],
+ ["Item de cobertura","Elemento usado para medir cobertura (uma partição, um limite, uma transição, uma instrução)."],
+ ["Rastreabilidade","Ligação entre base de teste e testware (ex.: requisito ↔ caso de teste)."],
+ ["Verificação","Construímos o produto CERTO conforme a especificação? (atende os requisitos)"],
+ ["Validação","Construímos o produto certo para o USUÁRIO? (atende a necessidade real)"],
+ ["Shift-left","Começar a testar mais cedo no ciclo de vida."],
+ ["TDD","Escreve teste de código → falha → código → passa → refatora."],
+ ["ATDD","Testes de aceite escritos antes, a partir dos critérios de aceite, guiando o desenvolvimento."],
+ ["BDD","Comportamento descrito em linguagem natural: Dado / Quando / Então."],
+ ["Teste de confirmação","Verifica se um defeito corrigido realmente foi corrigido."],
+ ["Teste de regressão","Verifica se uma mudança não quebrou algo que funcionava."],
+ ["Teste de manutenção","Teste de mudanças em sistema em operação: modificação, migração, aposentadoria."],
+ ["Teste estático","Examinar sem executar (revisões e análise estática)."],
+ ["Anomalia","Qualquer desvio do esperado encontrado numa revisão (pode ou não ser defeito)."],
+ ["Walkthrough","Revisão conduzida pelo AUTOR."],
+ ["Inspeção","Revisão mais formal, processo completo e coleta de métricas; autor não lidera."],
+ ["Moderador","Garante reunião eficaz, media conflitos, controla o tempo, mantém ambiente seguro."],
+ ["Partição de equivalência","Dividir entradas em grupos tratados igual; testar 1 valor de cada."],
+ ["Análise de valor limite","Testar as bordas das partições (2 ou 3 valores por limite)."],
+ ["Cobertura de instrução","Instruções executadas ÷ total de instruções."],
+ ["Cobertura de ramificação","Ramificações (saídas de decisões) exercitadas ÷ total."],
+ ["Suposição de erro","Prever onde há defeitos com base em experiência e erros típicos."],
+ ["Teste exploratório","Aprender, modelar e executar testes ao mesmo tempo."],
+ ["Carta de teste","Objetivo que guia uma sessão de teste exploratório."],
+ ["3C","Cartão, Conversação, Confirmação — aspectos da história de usuário."],
+ ["Critério de aceite","Condições para a história ser considerada pronta."],
+ ["Critério de entrada","Pré-condições para iniciar uma atividade de teste."],
+ ["Critério de saída","Condições para considerar uma atividade de teste concluída."],
+ ["Estimativa de três pontos","E = (Otimista + 4×Mais provável + Pessimista) ÷ 6."],
+ ["Nível de risco","Probabilidade × Impacto."],
+ ["Risco de projeto","Ameaça à gestão do projeto: prazo, custo, pessoas, fornecedores."],
+ ["Risco de produto","Ameaça à qualidade do software: defeitos, desempenho, segurança..."],
+ ["Mitigação de risco","Ação para reduzir o risco — testar é uma forma de mitigação."],
+ ["Burndown","Gráfico de trabalho restante × tempo na iteração."],
+ ["Gerenciamento de configuração","Identificar, versionar e controlar itens de teste e testware."],
+ ["Independência de teste","Separação entre quem cria e quem testa; ajuda por vieses diferentes."]
+];
+
+// ===== JOGOS DE CLASSIFICAR (exercícios de memorização) =====
+const SORTS = [
+ {id:"edf", t:"Erro, defeito, falha ou causa-raiz?", ch:1, cats:["Erro","Defeito","Falha","Causa-raiz"], items:[
+  ["Ação humana que produz um resultado incorreto.",0],
+  ["Imperfeição num produto de trabalho que faz ele não atender o requisito.",1],
+  ["Evento em que o sistema não executa uma função necessária.",2],
+  ["Fonte de um defeito; se removida, esse tipo de defeito diminui ou some.",3],
+  ["Analista de negócios interpretou a necessidade do cliente de forma equivocada.",0],
+  ["Fórmula errada de juros compostos que o dev colocou no código.",1],
+  ["Cliente percebe que o item duplica toda vez que inclui no pedido.",2],
+  ["Dev codificou errado porque a especificação estava desatualizada e ele faltou à reunião de alinhamento.",3],
+  ["O desenvolvedor assumiu o formato americano (ponto decimal).",0],
+  ["O cálculo de juros aparece errado na tela.",2],
+  ["A história de usuário está documentada errada.",1]
+ ]},
+ {id:"proc", t:"Qual grupo do processo de teste?", ch:1, cats:["Planejamento","Monitoramento e controle","Análise","Modelagem","Implementação","Execução","Conclusão"], items:[
+  ["Definir objetivos e abordagem dentro das restrições do contexto.",0],
+  ["Comparar o progresso real com o plano e tomar ações.",1],
+  ["Analisar a base de teste e definir/priorizar condições de teste.",2],
+  ["Elaborar casos de teste e definir dados e ambiente necessários.",3],
+  ["Organizar casos em procedimentos, montar suítes e scripts, preparar ambiente.",4],
+  ["Rodar os testes, comparar esperado × real e reportar anomalias.",5],
+  ["Arquivar testware, encerrar ambiente, lições aprendidas.",6],
+  ["Plano de teste",0],["Cronograma de testes",0],["Registro de riscos",0],["Critérios de entrada e saída",0],
+  ["Relatório de progresso do teste",1],["Documentação de diretrizes de controle",1],
+  ["Condições de teste (priorizadas)",2],["Relatórios de defeitos da base de teste",2],
+  ["Casos de teste (priorizados)",3],["Cartas de teste",3],["Itens de cobertura",3],["Requisitos de dados de teste",3],["Requisitos de ambiente de teste",3],
+  ["Procedimentos de teste",4],["Scripts de teste automatizados",4],["Conjuntos (suítes) de teste",4],["Cronograma de execução",4],["Stubs, drivers, simuladores, virtualização de serviço",4],
+  ["Registros (logs) de teste",5],["Relatórios de defeitos",5],
+  ["Relatório de conclusão do teste",6],["Lições aprendidas documentadas",6],["Itens de ação para melhoria",6],["Solicitações de alteração / itens de backlog",6]
+ ]},
+ {id:"princ", t:"Qual princípio de teste?", ch:1, cats:["1 Presença, não ausência","2 Exaustivo impossível","3 Cedo economiza","4 Defeitos se agrupam","5 Testes se degradam","6 Depende do contexto","7 Falácia da ausência"], items:[
+  ["'Todos os testes passaram, então não há defeitos.' — essa conclusão está errada por causa do princípio...",0],
+  ["Cliente quer testar todas as combinações possíveis.",1],
+  ["Revisar requisitos logo no começo.",2],
+  ["80% dos defeitos estão em 20% dos módulos.",3],
+  ["Mesma suíte há meses, passa sempre, mas defeitos escapam.",4],
+  ["Sistema de avião testado diferente de um site institucional.",5],
+  ["Sem defeitos, mas o usuário não consegue usar.",6],
+  ["Achei muitos defeitos num módulo, vou testar mais ali.",3],
+  ["Defeitos graves só no fim → retrabalho caro.",2]
+ ]},
+ {id:"rev", t:"Qual função na revisão?", ch:3, cats:["Gerente","Autor","Moderador","Relator","Revisor","Líder da revisão"], items:[
+  ["Criar o produto de trabalho.",1],["Corrigir o produto em análise.",1],
+  ["Mediar conflitos.",2],["Gerenciar o tempo.",2],["Garantir reunião eficaz.",2],["Garantir ambiente seguro para todos falarem.",2],
+  ["Fornecer recursos (equipe e tempo).",0],["Decidir quais produtos devem ser revisados.",0],
+  ["Reunir as anomalias identificadas.",3],["Registrar informações, decisões e novas anomalias da reunião.",3],
+  ["Realizar as revisões.",4],["Pode ser especialista, alguém do projeto ou outro stakeholder.",4],
+  ["Assumir a responsabilidade geral pela revisão.",5],["Decidir quem será envolvido.",5],["Organizar quando e onde será a revisão.",5]
+ ]},
+ {id:"revtipo", t:"Qual tipo de revisão?", ch:3, cats:["Informal","Walkthrough","Revisão técnica","Inspeção"], items:[
+  ["Sem processo definido e sem documento formal.",0],
+  ["Conduzida pelo autor.",1],
+  ["Objetivos: educar, gerar ideias, avaliar qualidade; autor lidera.",1],
+  ["Revisores tecnicamente qualificados, liderada por moderador, busca consenso técnico.",2],
+  ["Mais formal, processo completo, coleta métricas.",3],
+  ["Autor NÃO pode ser líder nem relator.",3],
+  ["Muito usada no ágil, par revisa rapidamente.",0]
+ ]},
+ {id:"revproc", t:"Qual atividade do processo de revisão?", ch:3, cats:["Planejamento","Início","Revisão individual","Comunicação e análise","Correção e relatório"], items:[
+  ["Definir escopo, objetivo, critérios de saída, esforço e prazo.",0],
+  ["Garantir que todos estão preparados e com acesso ao material.",1],
+  ["Cada revisor avalia o produto e anota anomalias.",2],
+  ["Discutir as anomalias e decidir status e ações.",3],
+  ["Criar relatório de defeitos e acompanhar correções.",4],
+  ["Reunião em que revisor e autor discutem os problemas.",3]
+ ]},
+ {id:"quad", t:"Qual quadrante ágil?", ch:5, cats:["Q1","Q2","Q3","Q4"], items:[
+  ["Teste de componente (unidade).",0],["Teste de integração de componentes.",0],
+  ["Teste funcional / de histórias.",1],["Protótipos e simulações com o negócio.",1],
+  ["Teste exploratório.",2],["Teste de usabilidade.",2],["Teste de aceite do usuário (UAT).",2],
+  ["Teste de desempenho / carga.",3],["Teste de segurança.",3],["Teste de confiabilidade.",3]
+ ]},
+ {id:"nivel", t:"Qual nível de teste?", ch:2, cats:["Componente","Integração de componentes","Sistema","Integração de sistemas","Aceite"], items:[
+  ["Dev testa uma função isolada.",0],
+  ["Falhas de comunicação entre módulos.",1],
+  ["Estratégias top-down, bottom-up, big-bang.",1],
+  ["Regras de negócio implementadas no sistema todo.",2],
+  ["Comunicação com o gateway de pagamento externo.",3],
+  ["Atende às necessidades de negócio do usuário?",4],
+  ["Alfa e beta.",4]
+ ]},
+ {id:"risco", t:"Risco de projeto ou de produto?", ch:5, cats:["Projeto","Produto"], items:[
+  ["Atraso na entrega do fornecedor.",0],["Corte de orçamento.",0],["Falta de pessoas qualificadas.",0],["Redução de custo por concorrência com outros projetos.",0],
+  ["Tempo de resposta lento.",1],["Cálculo de imposto errado.",1],["Vulnerabilidade de segurança.",1],["Interface difícil de usar.",1]
+ ]}
+];
+
+// ===== DIAGRAMAS =====
+const DIAG = {
+ fluxoAJ: `<svg viewBox="0 0 300 330" class="dg"><defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker></defs>
+ <g font-size="13" text-anchor="middle" fill="currentColor"><g class="bx">
+ <rect x="130" y="10" width="36" height="30"/><rect x="130" y="70" width="36" height="30"/><rect x="220" y="70" width="36" height="30"/>
+ <rect x="130" y="130" width="36" height="30"/><rect x="40" y="130" width="36" height="30"/><rect x="220" y="130" width="36" height="30"/>
+ <rect x="130" y="190" width="36" height="30"/><rect x="40" y="190" width="36" height="30"/><rect x="130" y="250" width="36" height="30"/><rect x="130" y="295" width="36" height="30"/></g>
+ <text x="148" y="30">A</text><text x="148" y="90">B</text><text x="238" y="90">I</text><text x="148" y="150">C</text><text x="58" y="150">G</text><text x="238" y="150">J</text><text x="148" y="210">D</text><text x="58" y="210">H</text><text x="148" y="270">E</text><text x="148" y="315">F</text></g>
+ <g stroke="currentColor" fill="none" marker-end="url(#ar)"><path d="M148 40 V68"/><path d="M148 100 V128"/><path d="M166 85 H218"/><path d="M238 100 V128"/><path d="M130 145 H78"/><path d="M148 160 V188"/><path d="M58 160 V188"/><path d="M238 160 V205 H168"/><path d="M148 220 V248"/><path d="M58 220 V265 H128"/><path d="M148 280 V293"/><path d="M130 310 H15 V25 H128"/></g></svg>`,
+ estadosAF: `<svg viewBox="0 0 320 250" class="dg"><defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker></defs>
+ <g stroke="currentColor" fill="none"><circle cx="20" cy="70" r="6" fill="currentColor"/><g class="st"><circle cx="110" cy="70" r="22"/><circle cx="220" cy="50" r="20"/><circle cx="280" cy="140" r="20"/><circle cx="190" cy="200" r="20"/><circle cx="90" cy="215" r="20"/></g>
+ <g marker-end="url(#ar2)"><path d="M26 70 H86"/><path d="M100 50 C 80 5, 140 5, 118 49"/><path d="M132 66 L198 54"/><path d="M234 65 L268 122"/><path d="M262 132 L132 78"/><path d="M265 155 L208 190"/><path d="M180 182 L120 90"/><path d="M170 205 L110 212"/><path d="M92 195 L106 93"/></g></g>
+ <g font-size="13" text-anchor="middle" fill="currentColor"><text x="110" y="75">A</text><text x="220" y="55">B</text><text x="280" y="145">C</text><text x="190" y="205">D</text><text x="90" y="220">F</text></g></svg>`,
+ estadosAG: `<svg viewBox="0 0 330 200" class="dg"><defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker></defs>
+ <g font-size="12" text-anchor="middle" fill="currentColor"><g class="bx"><rect x="10" y="15" width="70" height="30" rx="6"/><rect x="130" y="15" width="70" height="30" rx="6"/><rect x="250" y="15" width="70" height="30" rx="6"/><rect x="130" y="85" width="70" height="30" rx="6"/><rect x="10" y="155" width="70" height="30" rx="6"/><rect x="130" y="155" width="70" height="30" rx="6"/><rect x="250" y="155" width="70" height="30" rx="6"/></g>
+ <text x="45" y="35">Estado A</text><text x="165" y="35">Estado B</text><text x="285" y="35">Estado C</text><text x="165" y="105">Estado D</text><text x="45" y="175">Estado E</text><text x="165" y="175">Estado F</text><text x="285" y="175">Estado G</text></g>
+ <g stroke="currentColor" fill="none" marker-end="url(#ar3)"><path d="M80 25 H128"/><path d="M130 37 H82"/><path d="M200 25 H248"/><path d="M250 37 H202"/><path d="M165 45 V83"/><path d="M165 115 V153"/><path d="M130 165 H82"/><path d="M80 177 H128"/><path d="M250 165 H202"/><path d="M200 177 H248"/><path d="M278 155 V47"/><path d="M292 47 V153"/></g></svg>`,
+ init: `<svg viewBox="0 0 400 150" class="dg"><defs><marker id="ar4" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker></defs>
+ <g font-size="11" text-anchor="middle" fill="currentColor"><g class="bx"><rect x="5" y="60" width="60" height="28"/><rect x="120" y="10" width="80" height="32"/><rect x="120" y="105" width="80" height="32"/><rect x="290" y="10" width="80" height="32"/><rect x="290" y="105" width="80" height="32"/></g>
+ <text x="35" y="78">INIT</text><text x="160" y="30">DEBUG MODE</text><text x="160" y="125">IN OPERATION</text><text x="330" y="30">OFF</text><text x="330" y="125">ON HOLD</text>
+ <text x="85" y="18">test</text><text x="85" y="145">run</text><text x="245" y="20">done</text><text x="180" y="75">error</text><text x="245" y="100">pause</text><text x="245" y="148">resume</text><text x="350" y="75">done</text></g>
+ <g stroke="currentColor" fill="none" marker-end="url(#ar4)"><path d="M35 60 V26 H118"/><path d="M35 88 V121 H118"/><path d="M200 26 H288"/><path d="M160 105 V44"/><path d="M200 115 H288"/><path d="M290 130 H202"/><path d="M330 105 V44"/></g></svg>`,
+ bomba: `<svg viewBox="0 0 400 230" class="dg"><defs><marker id="ar5" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor"/></marker></defs>
+ <g stroke="currentColor" fill="none" class="st"><circle cx="60" cy="55" r="38"/><circle cx="330" cy="55" r="38"/><circle cx="330" cy="180" r="38"/><circle cx="60" cy="180" r="38"/></g>
+ <g font-size="10" text-anchor="middle" fill="currentColor"><text x="60" y="52">Aguardando</text><text x="60" y="64">cliente</text><text x="330" y="48">Aguardando</text><text x="330" y="60">tipo de</text><text x="330" y="72">combustível</text><text x="330" y="177">Aguardando</text><text x="330" y="189">abastecimento</text><text x="60" y="184">Abastecendo</text>
+ <text x="60" y="8">cartão inválido</text><text x="195" y="30">cartão válido</text><text x="195" y="72">cancelar</text><text x="190" y="118">cancelar</text><text x="385" y="120">selecionar tipo</text><text x="195" y="172">injetar combustível</text><text x="25" y="120">finalizar</text></g>
+ <g stroke="currentColor" fill="none" marker-end="url(#ar5)"><path d="M40 22 C 20 -5, 90 -5, 72 19"/><path d="M98 45 H290"/><path d="M292 62 H100"/><path d="M300 157 L92 77"/><path d="M350 93 V140"/><path d="M292 180 H100"/><path d="M50 142 V95"/></g></svg>`
+};
+
+</script>
+<script>
+// ================== CTFL QUEST — lógica do app ==================
+const KEY = "ctflquest_geral_v1";
+const LEVELS = [[0,"Estagiário de QA","🐣"],[150,"Testador Júnior","🔍"],[400,"Testador Pleno","🧪"],[800,"Testador Sênior","🛡️"],[1400,"Analista de Teste","🧠"],[2200,"Test Lead","🚀"],[3200,"Mestre CTFL","🏆"]];
+const L = "abcd";
+let S = load();
+let SES = null; // sessão de quiz atual
+let timerInt = null;
+
+function load(){
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(KEY)); } catch(e) {}
+  return Object.assign({xp:0,streak:0,lastDay:null,q:{},ach:{},blitz:0,sims:[],flash:0,sorts:{},answered:0,correct:0,maxCombo:0,reviewCleared:0}, d||{});
+}
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e) {} topbar(); }
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle = (a) => { a = a.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const today = () => new Date().toISOString().slice(0,10);
+
+function qs(q){ // estado de uma questão
+  if (!S.q[q.id]) return {s:0,c:0,box:q.w?0:-1};
+  return S.q[q.id];
+}
+function inReview(q){ const st = qs(q); return st.box >= 0 && st.box <= 1; }
+function reviewList(){ return Q.filter(inReview); }
+function mastery(ch){
+  const list = Q.filter(q => q.ch === ch);
+  const m = list.filter(q => qs(q).box >= 2).length;
+  return list.length ? m / list.length : 0;
+}
+function starsFor(p){ return p>=.9?3:p>=.7?2:p>=.4?1:0; }
+function level(){ let i=0; LEVELS.forEach((l,k)=>{ if(S.xp>=l[0]) i=k; }); return i; }
+
+function touchDay(){
+  const t = today();
+  if (S.lastDay === t) return;
+  const y = new Date(Date.now()-864e5).toISOString().slice(0,10);
+  S.streak = (S.lastDay === y) ? S.streak + 1 : 1;
+  S.lastDay = t;
+}
+function topbar(){ $("tXp").textContent = S.xp; $("tStreak").textContent = S.streak; }
+
+function toast(msg){ const t=$("toast"); t.innerHTML=msg; t.classList.add("on"); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove("on"),2600); }
+function confetti(){ const e=["🎉","⭐","✨","🏆","💜","🎯"]; for(let i=0;i<28;i++){ const s=document.createElement("div"); s.className="conf"; s.textContent=e[i%e.length]; s.style.left=Math.random()*100+"vw"; s.style.animationDelay=(Math.random()*.6)+"s"; document.body.appendChild(s); setTimeout(()=>s.remove(),3000);} }
+function flyXp(n, el){ if(!el) return; const r=el.getBoundingClientRect(); const f=document.createElement("div"); f.className="xpfly"; f.textContent="+"+n+" XP"; f.style.left=(r.right-90)+"px"; f.style.top=(r.top)+"px"; document.body.appendChild(f); setTimeout(()=>f.remove(),1000); }
+
+function addXp(n, el){
+  const before = level();
+  S.xp += n; touchDay();
+  if (el) flyXp(n, el);
+  const after = level();
+  if (after > before){ confetti(); toast(`${LEVELS[after][2]} Subiu de nível: <b>${LEVELS[after][1]}</b>!`); }
+  checkAch(); save();
+}
+
+// ================== CONQUISTAS ==================
+const ACH = [
+ ["first","🌱","Primeiro passo","Responda sua primeira questão.",()=>S.answered>=1],
+ ["c5","🔥","Combo x5","Acerte 5 seguidas.",()=>S.maxCombo>=5],
+ ["c10","⚡","Combo x10","Acerte 10 seguidas.",()=>S.maxCombo>=10],
+ ["q50","📚","50 questões","Responda 50 questões.",()=>S.answered>=50],
+ ["q200","🏋️","200 questões","Responda 200 questões.",()=>S.answered>=200],
+ ["rev","🧹","Caçador de erros","Zere a fila de revisão de erros.",()=>S.reviewCleared>0],
+ ["ch1","🧱","Mestre dos Fundamentos","Domine 80% do Cap. 1.",()=>mastery(1)>=.8],
+ ["ch2","🔄","Mestre do Ciclo de Vida","Domine 80% do Cap. 2.",()=>mastery(2)>=.8],
+ ["ch3","📄","Mestre do Estático","Domine 80% do Cap. 3.",()=>mastery(3)>=.8],
+ ["ch4","🧪","Mestre das Técnicas","Domine 80% do Cap. 4.",()=>mastery(4)>=.8],
+ ["ch5","📊","Mestre da Gestão","Domine 80% do Cap. 5.",()=>mastery(5)>=.8],
+ ["ch6","🛠️","Mestre das Ferramentas","Domine 80% do Cap. 6.",()=>mastery(6)>=.8],
+ ["sim","🎓","Aprovado!","Tire 65% ou mais em um simulado.",()=>S.sims.some(s=>s.score/s.total>=.65)],
+ ["sim80","💎","Aprovado com folga","Tire 80% ou mais em um simulado.",()=>S.sims.some(s=>s.score/s.total>=.8)],
+ ["blitz","⏱️","Relâmpago","Faça 10 acertos no modo Relâmpago.",()=>S.blitz>=10],
+ ["flash","🃏","Memória afiada","Revise 50 flashcards.",()=>S.flash>=50],
+ ["sort","🧩","Organizador","Faça 100% em um jogo de classificar.",()=>Object.values(S.sorts).some(v=>v>=1)],
+ ["d3","📅","3 dias seguidos","Estude 3 dias seguidos.",()=>S.streak>=3],
+ ["d7","🗓️","Semana perfeita","Estude 7 dias seguidos.",()=>S.streak>=7]
+];
+function checkAch(){
+  ACH.forEach(a=>{ if(!S.ach[a[0]] && a[4]()){ S.ach[a[0]] = today(); setTimeout(()=>toast(`${a[1]} Conquista: <b>${a[2]}</b>`), 300); } });
+}
+
+// ================== NAVEGAÇÃO ==================
+function go(view, arg){
+  clearInterval(timerInt);
+  window.scrollTo(0,0);
+  const V = {home, chapter, flash, sorts, sortGame, ach, stats, simMenu};
+  (V[view]||home)(arg);
+}
+function render(h){ $("app").innerHTML = h; }
+
+// ================== HOME ==================
+function home(){
+  const lv = level(), cur = LEVELS[lv], nxt = LEVELS[lv+1];
+  const pct = nxt ? (S.xp-cur[0])/(nxt[0]-cur[0])*100 : 100;
+  const rv = reviewList().length;
+  // foco sugerido: capítulo com maior (peso × falta de domínio)
+  const focus = CHAPTERS.slice().sort((a,b)=> b.peso*(1-mastery(b.n)) - a.peso*(1-mastery(a.n)))[0];
+  const achN = Object.keys(S.ach).length;
+  render(`
+  <div class="card hero">
+    <div class="lv">${cur[2]} Nível ${lv+1}</div>
+    <h2>${cur[1]}</h2>
+    <div class="bar"><i style="width:${pct}%"></i></div>
+    <div class="lv">${nxt ? `${S.xp} / ${nxt[0]} XP para <b>${nxt[1]}</b>` : "Nível máximo! Você está pronto. 🏆"}</div>
+  </div>
+  <div class="grid">
+    <button class="tile big" onclick="startDaily()"><div class="ic">🎯</div><div><b>Missão do dia</b><br><small>10 questões misturadas: seus erros + o que mais cai na prova. Comece por aqui.</small></div></button>
+    <button class="tile" onclick="startReview()"><div class="ic">🩹</div><b>Revisar erros ${rv?`<span class="badge">${rv}</span>`:""}</b><small>Questões que você errou no app. Acerte 2x para sair da fila.</small></button>
+    <button class="tile" onclick="go('simMenu')"><div class="ic">🎓</div><b>Simulado da prova</b><small>40 questões, 60 min, sem ajuda. Passa com 26 (65%).</small></button>
+    <button class="tile" onclick="startBlitz()"><div class="ic">⏱️</div><b>Relâmpago</b><small>60 segundos. Quantas você acerta? Recorde: ${S.blitz}</small></button>
+    <button class="tile" onclick="go('flash')"><div class="ic">🃏</div><b>Flashcards</b><small>${FLASH.length} termos do glossário para decorar.</small></button>
+    <button class="tile" onclick="go('sorts')"><div class="ic">🧩</div><b>Classificar</b><small>Jogos rápidos: erro/defeito/falha, grupos do processo, funções da revisão...</small></button>
+    <button class="tile" onclick="go('ach')"><div class="ic">🏅</div><b>Conquistas</b><small>${achN} de ${ACH.length} desbloqueadas.</small></button>
+  </div>
+  <h3>Trilha por capítulo</h3>
+  <div class="card" style="padding:12px 16px;font-size:14.5px">💡 <b>Foco sugerido:</b> Cap. ${focus.n} – ${focus.t} (vale ~${focus.peso} das 40 questões da prova e seu domínio está em ${Math.round(mastery(focus.n)*100)}%).</div>
+  ${CHAPTERS.map(c=>{ const m=mastery(c.n); const n=Q.filter(q=>q.ch===c.n).length; return `
+  <button class="chap" onclick="go('chapter',${c.n})">
+    <div class="num">${c.icon}</div>
+    <div class="info"><b>Cap. ${c.n} · ${c.t}</b><br><small>${n} questões · ~${c.peso} na prova</small>
+      <div class="bar g" style="height:7px;margin:6px 0 0"><i style="width:${m*100}%"></i></div></div>
+    <div class="stars">${"★".repeat(starsFor(m))}${"☆".repeat(3-starsFor(m))}</div>
+  </button>`}).join("")}
+  <div class="row" style="margin-top:10px"><button class="btn sec" onclick="go('stats')">📈 Estatísticas</button></div>
+  `);
+}
+
+// ================== CAPÍTULO ==================
+function chapter(n, tab){
+  const c = CHAPTERS.find(x=>x.n===n); tab = tab||"resumo";
+  const m = mastery(n);
+  const games = SORTS.filter(s=>s.ch===n);
+  let body = "";
+  if (tab==="resumo"){
+    body = c.cards.map((k,i)=>`<div class="card lesson"><h4>${i+1}. ${k.h}</h4>${k.b}</div>`).join("")
+      + `<button class="btn full" onclick="startChapter(${n})">Bora treinar o Cap. ${n} →</button>`;
+  } else if (tab==="pegadinhas"){
+    body = `<div class="card"><p class="mut" style="margin-top:0">O que mais derruba na prova neste capítulo:</p>${c.traps.map(t=>`<div class="trap">⚠️ ${t}</div>`).join("")}</div>`;
+  } else if (tab==="jogos"){
+    body = games.length ? games.map(g=>`<button class="chap" onclick="go('sortGame','${g.id}')"><div class="num">🧩</div><div class="info"><b>${g.t}</b><br><small>${g.items.length} itens · melhor: ${Math.round((S.sorts[g.id]||0)*100)}%</small></div></button>`).join("") : `<div class="card mut">Sem jogos de classificar para este capítulo. Use os flashcards!</div>`;
+  }
+  render(`
+   <div class="card">
+     <div class="row" style="align-items:center"><div style="font-size:34px">${c.icon}</div><div style="flex:1"><b style="font-size:19px">Cap. ${n} · ${c.t}</b><br><span class="mut" style="font-size:14px">Domínio: ${Math.round(m*100)}% · ~${c.peso} questões na prova</span></div><div class="stars" style="font-size:20px">${"★".repeat(starsFor(m))}${"☆".repeat(3-starsFor(m))}</div></div>
+     <div class="bar g"><i style="width:${m*100}%"></i></div>
+     <div class="row" style="margin-top:12px"><button class="btn" onclick="startChapter(${n})">▶ Quiz do capítulo</button><button class="btn sec" onclick="go('home')">← Voltar</button></div>
+   </div>
+   <div class="tabs">
+     <button class="${tab==='resumo'?'on':''}" onclick="chapter(${n},'resumo')">📖 Resumo</button>
+     <button class="${tab==='pegadinhas'?'on':''}" onclick="chapter(${n},'pegadinhas')">⚠️ Pegadinhas</button>
+     <button class="${tab==='jogos'?'on':''}" onclick="chapter(${n},'jogos')">🧩 Jogos</button>
+   </div>${body}`);
+}
+
+// ================== MONTAGEM DE SESSÕES ==================
+function weakScore(q){ const st=qs(q); if (st.box<0) return 2 + Math.random(); return (4-st.box) + Math.random()*1.5; } // maior = mais urgente
+function pickWeak(list, n){ return list.slice().sort((a,b)=>weakScore(b)-weakScore(a)).slice(0,n); }
+
+function startChapter(n){
+  const list = shuffle(pickWeak(Q.filter(q=>q.ch===n), 10));
+  startQuiz({mode:"chapter", title:`Cap. ${n}`, list, hearts:3, back:()=>go('chapter',n)});
+}
+function startDaily(){
+  const rv = shuffle(reviewList()).slice(0,4);
+  const ids = new Set(rv.map(q=>q.id));
+  const rest = [];
+  const weights = {1:8,2:6,3:4,4:11,5:9,6:2};
+  const pool = Q.filter(q=>!ids.has(q.id));
+  while (rv.length + rest.length < 10 && pool.length){
+    // escolhe capítulo pelo peso da prova
+    let r = Math.random()*40, ch = 1; for (const k in weights){ r -= weights[k]; if (r<=0){ ch=+k; break; } }
+    const cands = pool.filter(q=>q.ch===ch);
+    const q = cands.length ? pickWeak(cands,3)[Math.floor(Math.random()*Math.min(3,cands.length))] : pool[0];
+    rest.push(q); pool.splice(pool.indexOf(q),1);
+  }
+  startQuiz({mode:"daily", title:"Missão do dia", list: shuffle(rv.concat(rest)), hearts:3, back:()=>go('home')});
+}
+function startReview(){
+  const list = shuffle(reviewList()).slice(0,15);
+  if (!list.length){ toast("🎉 Nenhum erro na fila! Faça a Missão do dia."); return; }
+  startQuiz({mode:"review", title:"Revisar erros", list, hearts:0, back:()=>go('home')});
+}
+function startBlitz(){
+  const list = shuffle(Q.filter(q=>!q.img && q.q.length < 330 && !q.q.includes("<table")));
+  startQuiz({mode:"blitz", title:"Relâmpago", list, hearts:0, time:60, back:()=>go('home')});
+}
+
+// ================== QUIZ (modo treino) ==================
+function startQuiz(cfg){
+  SES = Object.assign({i:0, ok:0, combo:0, xp:0, done:[], answered:false, hadHearts: !!cfg.hearts}, cfg);
+  if (cfg.time){ SES.endAt = Date.now()+cfg.time*1000; timerInt = setInterval(tickBlitz, 250); }
+  showQ();
+}
+function tickBlitz(){
+  const left = Math.max(0, Math.ceil((SES.endAt-Date.now())/1000));
+  const el = $("tmr"); if (el) el.textContent = left+"s";
+  if (left<=0){ clearInterval(timerInt); endQuiz(); }
+}
+function qHtml(q){
+  return `<div class="qtext">${q.q}</div>${q.img?DIAG[q.img]:""}`;
+}
+function showQ(){
+  const q = SES.list[SES.i];
+  if (!q){ endQuiz(); return; }
+  SES.answered = false;
+  const st = qs(q);
+  const hearts = SES.hearts ? `<span class="hearts">${"❤️".repeat(SES.hearts)}${"🖤".repeat(3-SES.hearts)}</span>` : "";
+  const prog = SES.mode==="blitz" ? `⏱️ <span class="timer" id="tmr">${Math.max(0,Math.ceil((SES.endAt-Date.now())/1000))}s</span> · ✅ ${SES.ok}` : `${SES.i+1}/${SES.list.length}`;
+  render(`
+   <div class="card">
+    <div class="qhead"><b style="color:var(--txt)">${SES.title}</b> · ${prog}<div class="sp"></div>${SES.combo>=2?`<span class="combo">🔥 x${SES.combo}</span>`:""} ${hearts}</div>
+    ${SES.mode!=="blitz"?`<div class="bar" style="height:6px;margin:0 0 12px"><i style="width:${SES.i/SES.list.length*100}%"></i></div>`:""}
+    <div style="margin-bottom:8px"><span class="tag">Cap. ${q.ch}</span> <span class="tag">${esc(q.src)}</span> </div>
+    ${qHtml(q)}
+    <div id="opts">${q.o.map((o,k)=>`<button class="opt" id="o${k}" onclick="answer(${k})"><span class="l">${L[k]}</span>${o}</button>`).join("")}</div>
+    <div id="fb"></div>
+   </div>
+   <div class="row"><button class="btn sec" onclick="endQuiz()">Encerrar</button></div>`);
+}
+function answer(k){
+  if (SES.answered) return; SES.answered = true;
+  const q = SES.list[SES.i], right = k===q.a;
+  document.querySelectorAll(".opt").forEach(b=>b.disabled=true);
+  $("o"+q.a).classList.add("ok"); if (!right) $("o"+k).classList.add("bad");
+  // estado
+  const st = Object.assign({s:0,c:0,box:q.w?0:-1}, S.q[q.id]||{});
+  const wasReview = inReview(q);
+  st.s++; S.answered++;
+  if (right){ st.c++; S.correct++; st.box = Math.min(4, Math.max(st.box,0)+1); SES.ok++; SES.combo++; S.maxCombo=Math.max(S.maxCombo,SES.combo); }
+  else { st.box = 0; SES.combo = 0; if (SES.hearts) SES.hearts--; }
+  S.q[q.id] = st;
+  if (wasReview && reviewList().length===0) S.reviewCleared++;
+  let gain = 0;
+  if (right){ gain = SES.mode==="blitz" ? 5 : 10 + Math.min(Math.max(SES.combo-1,0),5)*2; SES.xp += gain; addXp(gain, $("o"+q.a)); } else { touchDay(); checkAch(); save(); }
+  SES.done.push({q, k, right});
+  if (SES.mode==="blitz"){ setTimeout(()=>{ SES.i++; showQ(); }, right?350:1400); if(!right) $("fb").innerHTML = `<div class="fb bad"><b>Resposta: ${L[q.a]})</b>${q.e}</div>`; return; }
+  const cheer = ["Mandou bem!","Isso aí!","Acertou!","Boa!","Na mosca! 🎯"];
+  $("fb").innerHTML = `<div class="fb ${right?"ok":"bad"}"><b>${right?cheer[Math.floor(Math.random()*cheer.length)]+(SES.combo>=3?` 🔥 Combo x${SES.combo}`:""):"Não foi dessa vez — a certa é a "+L[q.a]+")"}</b>💡 ${q.e}</div>
+   <div class="row" style="margin-top:12px"><button class="btn full" id="nextBtn" onclick="nextQ()">${(SES.hadHearts && SES.hearts===0) || SES.i===SES.list.length-1 ? "Ver resultado" : "Continuar →"}</button></div>`;
+  $("nextBtn").focus();
+}
+function nextQ(){
+  if (SES.mode!=="review" && SES.hearts===0 && SES.hadHearts){ endQuiz(); return; }
+  SES.i++; showQ();
+}
+function endQuiz(){
+  clearInterval(timerInt);
+  const n = SES.done.length, ok = SES.ok;
+  if (SES.mode==="blitz" && ok > S.blitz){ S.blitz = ok; toast(`⏱️ Novo recorde no Relâmpago: <b>${ok}</b>!`); }
+  checkAch(); save();
+  const pct = n ? ok/n : 0;
+  const stars = starsFor(pct);
+  if (stars===3 && n>=5) confetti();
+  const wrong = SES.done.filter(d=>!d.right);
+  const msg = pct>=.9?"Excelente! Você está voando. 🚀":pct>=.7?"Muito bom! Continue assim. 💪":pct>=.5?"Bom caminho — revise os erros abaixo. 📖":"Tudo bem errar: é assim que se aprende. Revise e tente de novo. 🌱";
+  render(`
+   <div class="card center">
+     <div style="font-size:40px">${SES.hearts===0&&SES.hadHearts?"💔":"🏁"}</div>
+     <div class="stars" style="font-size:32px">${"★".repeat(stars)}${"☆".repeat(3-stars)}</div>
+     <div class="big">${ok}/${n}</div>
+     <div class="mut">+${SES.xp} XP ganhos</div>
+     <p>${msg}</p>
+     <div class="row" style="justify-content:center"><button class="btn" onclick="(${SES.mode==='blitz'?'startBlitz':SES.mode==='daily'?'startDaily':SES.mode==='review'?'startReview':'()=>startChapter('+SES.list[0].ch+')'})()">Jogar de novo</button><button class="btn sec" onclick="go('home')">Início</button></div>
+   </div>
+   ${wrong.length?`<h3>Revise o que errou</h3>`+wrong.map(d=>`<div class="card"><div style="margin-bottom:6px"><span class="tag">Cap. ${d.q.ch}</span></div>${qHtml(d.q)}<div class="fb ok"><b>✅ ${L[d.q.a]}) ${d.q.o[d.q.a]}</b>${d.q.e}</div></div>`).join(""):""}
+  `);
+}
+
+
+// ================== SIMULADO ==================
+function simMenu(){
+  const hist = S.sims.slice(-5).reverse();
+  render(`
+  <div class="card"><h2 style="margin-top:0">🎓 Simulado da prova</h2>
+   <p class="mut">Igual à prova real: 40 questões, 60 minutos, sem mostrar a resposta na hora. Aprovação com <b>26 acertos (65%)</b>. Você pode navegar entre as questões e mudar respostas antes de entregar.</p>
+   <button class="chap" onclick="startExam('rand')"><div class="num">🎲</div><div class="info"><b>Simulado aleatório</b><br><small>Sorteado do banco com a mesma distribuição da prova (8·6·4·11·9·2 por capítulo). Cada vez é diferente.</small></div></button>
+   <button class="chap" onclick="startExam(1)"><div class="num">1️⃣</div><div class="info"><b>Simulado Completo 1</b><br><small>Simulado completo com 40 questões e gabarito comentado.</small></div></button>
+   <button class="chap" onclick="startExam(2)"><div class="num">2️⃣</div><div class="info"><b>Simulado Completo 2</b><br><small>${Q.filter(q=>q.sim===2).length} questões com gabarito resolvido com base no Syllabus.</small></div></button>
+   <button class="btn sec" onclick="go('home')">← Voltar</button>
+  </div>
+  ${hist.length?`<div class="card"><b>Últimos simulados</b>${hist.map(h=>`<div class="stat"><span>${h.date} · ${h.mode}</span><b style="color:${h.score/h.total>=.65?'var(--ok)':'var(--bad)'}">${h.score}/${h.total} (${Math.round(h.score/h.total*100)}%)</b></div>`).join("")}</div>`:""}`);
+}
+function startExam(mode){
+  let list;
+  if (mode==="rand"){
+    const dist = {1:8,2:6,3:4,4:11,5:9,6:2}; list = [];
+    for (const ch in dist) list = list.concat(shuffle(Q.filter(q=>q.ch===+ch)).slice(0,dist[ch]));
+  } else list = Q.filter(q=>q.sim===mode).sort((a,b)=>a.ch-b.ch);
+  SES = {mode:"exam", label: mode==="rand"?"Aleatório":"Simulado "+mode, list, i:0, ans:{}, endAt: Date.now()+60*60*1000};
+  timerInt = setInterval(tickExam, 1000);
+  showExamQ();
+}
+function tickExam(){
+  const left = Math.max(0, SES.endAt-Date.now());
+  const el = $("etmr"); if (el){ const m=Math.floor(left/60000), s=Math.floor(left%60000/1000); el.textContent = `${m}:${String(s).padStart(2,"0")}`; if(left<5*60000) el.style.color="var(--bad)"; }
+  if (left<=0){ clearInterval(timerInt); finishExam(); }
+}
+function showExamQ(){
+  const q = SES.list[SES.i], a = SES.ans[q.id];
+  const answered = Object.keys(SES.ans).length;
+  render(`
+  <div class="card">
+   <div class="qhead"><b style="color:var(--txt)">🎓 ${SES.label}</b> · ${SES.i+1}/${SES.list.length}<div class="sp"></div>⏳ <span class="timer" id="etmr">--:--</span></div>
+   <div class="nav">${SES.list.map((x,k)=>`<button class="${SES.ans[x.id]!==undefined?"ans":""} ${k===SES.i?"cur":""}" onclick="SES.i=${k};showExamQ()">${k+1}</button>`).join("")}</div>
+   ${qHtml(q)}
+   ${q.o.map((o,k)=>`<button class="opt ${a===k?"sel":""}" onclick="SES.ans['${q.id}']=${k};showExamQ()"><span class="l">${L[k]}</span>${o}</button>`).join("")}
+   <div class="row" style="margin-top:10px">
+    <button class="btn sec" ${SES.i===0?"disabled":""} onclick="SES.i--;showExamQ()">← Anterior</button>
+    <div class="sp"></div>
+    ${SES.i<SES.list.length-1?`<button class="btn" onclick="SES.i++;showExamQ()">Próxima →</button>`:""}
+   </div>
+  </div>
+  <div class="row"><button class="btn ok" onclick="if(confirm('Entregar o simulado? Respondidas: ${answered}/${SES.list.length}'))finishExam()">Entregar simulado (${answered}/${SES.list.length})</button><button class="btn sec" onclick="if(confirm('Sair sem salvar?'))go('home')">Sair</button></div>`);
+  tickExam();
+}
+function finishExam(){
+  clearInterval(timerInt);
+  let ok = 0; const byCh = {};
+  SES.list.forEach(q=>{
+    const k = SES.ans[q.id], right = k===q.a;
+    byCh[q.ch] = byCh[q.ch]||[0,0]; byCh[q.ch][1]++; if(right){ ok++; byCh[q.ch][0]++; }
+    const st = Object.assign({s:0,c:0,box:q.w?0:-1}, S.q[q.id]||{});
+    st.s++; S.answered++;
+    if (right){ st.c++; S.correct++; st.box=Math.min(4,Math.max(st.box,0)+1);} else st.box = 0;
+    S.q[q.id]=st;
+  });
+  const total = SES.list.length, pct = ok/total, pass = pct>=.65;
+  S.sims.push({date: today(), mode: SES.label, score: ok, total});
+  const gain = ok*8 + (pass?100:0);
+  addXp(gain);
+  if (pass) confetti();
+  render(`
+   <div class="card center">
+     <div style="font-size:46px">${pass?"🎓":"📚"}</div>
+     <div class="big" style="color:${pass?"var(--ok)":"var(--bad)"}">${ok}/${total}</div>
+     <div style="font-size:18px;font-weight:700">${Math.floor(pct*100)}% · ${pass?"APROVADO! 🎉":"Ainda não — precisa de 65%"}</div>
+     <div class="mut">+${gain} XP</div>
+   </div>
+   <div class="card"><b>Desempenho por capítulo</b>
+    ${Object.keys(byCh).map(ch=>{const [a,t]=byCh[ch]; const c=CHAPTERS[ch-1]; return `<div class="stat"><span>${c.icon} Cap. ${ch} · ${c.t}</span><b style="color:${a/t>=.65?'var(--ok)':'var(--bad)'}">${a}/${t}</b></div>`}).join("")}
+   </div>
+   <div class="row"><button class="btn" onclick="go('simMenu')">Outro simulado</button><button class="btn sec" onclick="go('home')">Início</button></div>
+   <h3>Correção comentada</h3>
+   ${SES.list.map((q,i)=>{ const k=SES.ans[q.id], r=k===q.a; return `<div class="card"><div style="margin-bottom:6px"><b>${i+1}.</b> ${r?"✅":"❌"} <span class="tag">Cap. ${q.ch}</span></div>${qHtml(q)}
+     ${!r?`<div class="fb bad"><b>Sua resposta: ${k===undefined?"(em branco)":L[k]+") "+q.o[k]}</b></div>`:""}
+     <div class="fb ok"><b>✅ ${L[q.a]}) ${q.o[q.a]}</b>${q.e}</div></div>`}).join("")}`);
+}
+
+// ================== FLASHCARDS ==================
+let FD = null;
+function flash(){
+  if (!FD || !FD.deck.length) FD = {deck: shuffle(FLASH.map((f,i)=>i)), known:0};
+  const i = FD.deck[0], f = FLASH[i];
+  render(`
+   <div class="card"><div class="qhead"><b style="color:var(--txt)">🃏 Flashcards</b><div class="sp"></div>Restam ${FD.deck.length} · Sabia: ${FD.known}</div>
+    <div class="flash" id="fc" onclick="this.classList.toggle('fl')"><div class="in"><div class="f">${f[0]}</div><div class="b">${f[1]}</div></div></div>
+    <p class="center mut" style="margin:0 0 12px">Toque no card para virar.</p>
+    <div class="row"><button class="btn sec" style="flex:1" onclick="flashAns(false)">😕 Não sabia</button><button class="btn ok" style="flex:1" onclick="flashAns(true)">😎 Sabia</button></div>
+   </div><button class="btn sec" onclick="FD=null;go('home')">← Voltar</button>`);
+}
+function flashAns(k){
+  const i = FD.deck.shift();
+  S.flash++;
+  if (k){ FD.known++; addXp(2); } else { FD.deck.splice(Math.min(3,FD.deck.length),0,i); touchDay(); checkAch(); save(); }
+  if (!FD.deck.length){ render(`<div class="card center"><div style="font-size:44px">🃏</div><div class="big">${FD.known}</div><p>Deck completo! Você passou por todos os termos.</p><div class="row" style="justify-content:center"><button class="btn" onclick="FD=null;flash()">De novo</button><button class="btn sec" onclick="FD=null;go('home')">Início</button></div></div>`); return; }
+  flash();
+}
+
+// ================== CLASSIFICAR ==================
+function sorts(){
+  render(`<div class="card"><h2 style="margin-top:0">🧩 Classificar</h2><p class="mut">Leia o item e toque na categoria certa. Ótimo para decorar o que a prova cobra de memória.</p>
+   ${SORTS.map(g=>`<button class="chap" onclick="go('sortGame','${g.id}')"><div class="num">${CHAPTERS[g.ch-1].icon}</div><div class="info"><b>${g.t}</b><br><small>Cap. ${g.ch} · ${g.items.length} itens · melhor: ${Math.round((S.sorts[g.id]||0)*100)}%</small></div></button>`).join("")}
+   <button class="btn sec" onclick="go('home')">← Voltar</button></div>`);
+}
+let SG = null;
+function sortGame(id){
+  const g = SORTS.find(x=>x.id===id);
+  SG = {g, items: shuffle(g.items), i:0, ok:0, lock:false};
+  sortShow();
+}
+function sortShow(){
+  const it = SG.items[SG.i];
+  if (!it){
+    const p = SG.ok/SG.items.length;
+    if (p > (S.sorts[SG.g.id]||0)) S.sorts[SG.g.id] = p;
+    if (p===1) confetti();
+    checkAch(); save();
+    render(`<div class="card center"><div style="font-size:44px">🧩</div><div class="stars" style="font-size:30px">${"★".repeat(starsFor(p))}${"☆".repeat(3-starsFor(p))}</div><div class="big">${SG.ok}/${SG.items.length}</div><div class="row" style="justify-content:center"><button class="btn" onclick="sortGame('${SG.g.id}')">De novo</button><button class="btn sec" onclick="go('sorts')">Outros jogos</button></div></div>`);
+    return;
+  }
+  SG.lock = false;
+  render(`<div class="card"><div class="qhead"><b style="color:var(--txt)">🧩 ${SG.g.t}</b><div class="sp"></div>${SG.i+1}/${SG.items.length} · ✅ ${SG.ok}</div>
+   <div class="bar" style="height:6px;margin:0 0 12px"><i style="width:${SG.i/SG.items.length*100}%"></i></div>
+   <div class="item">${it[0]}</div>
+   <div class="cats">${SG.g.cats.map((c,k)=>`<button id="c${k}" onclick="sortAns(${k})">${c}</button>`).join("")}</div>
+   </div><button class="btn sec" onclick="go('sorts')">← Sair</button>`);
+}
+function sortAns(k){
+  if (SG.lock) return; SG.lock = true;
+  const it = SG.items[SG.i], right = k===it[1];
+  $("c"+it[1]).classList.add("ok"); if(!right) $("c"+k).classList.add("bad");
+  if (right){ SG.ok++; addXp(3, $("c"+k)); } else { touchDay(); save(); }
+  setTimeout(()=>{ SG.i++; sortShow(); }, right?550:1500);
+}
+
+// ================== CONQUISTAS / ESTATÍSTICAS ==================
+function ach(){
+  render(`<div class="card"><h2 style="margin-top:0">🏅 Conquistas</h2>
+   ${ACH.map(a=>`<div class="ach ${S.ach[a[0]]?"":"off"}"><div class="e">${a[1]}</div><div><b>${a[2]}</b><br><small>${a[3]}${S.ach[a[0]]?" · ✅ "+S.ach[a[0]]:""}</small></div></div>`).join("")}
+   <h3>Níveis</h3>${LEVELS.map((l,i)=>`<div class="stat"><span>${l[2]} ${l[1]}</span><span class="mut">${l[0]} XP ${level()>=i?"✅":""}</span></div>`).join("")}
+   <div style="margin-top:12px"><button class="btn sec" onclick="go('home')">← Voltar</button></div></div>`);
+}
+function stats(){
+  const acc = S.answered ? Math.round(S.correct/S.answered*100) : 0;
+  render(`<div class="card"><h2 style="margin-top:0">📈 Estatísticas</h2>
+   <div class="stat"><span>Questões respondidas</span><b>${S.answered}</b></div>
+   <div class="stat"><span>Acertos</span><b>${acc}%</b></div>
+   <div class="stat"><span>Maior combo</span><b>${S.maxCombo}</b></div>
+   <div class="stat"><span>Na fila de revisão</span><b>${reviewList().length}</b></div>
+   <div class="stat"><span>Questões no banco</span><b>${Q.length}</b></div>
+   <h3>Por capítulo</h3>
+   ${CHAPTERS.map(c=>{ const list=Q.filter(q=>q.ch===c.n); let s=0,k=0; list.forEach(q=>{const st=qs(q); s+=st.s; k+=st.c;}); return `<div class="stat"><span>${c.icon} Cap. ${c.n} · ${c.t}</span><span>${s?Math.round(k/s*100)+"% acerto · ":""}<b>${Math.round(mastery(c.n)*100)}% domínio</b></span></div>`}).join("")}
+   <p class="mut" style="font-size:13.5px">Domínio = questões que você acertou pelo menos 2 vezes seguidas.</p>
+   <div class="row"><button class="btn sec" onclick="go('home')">← Voltar</button><div class="sp"></div><button class="btn sec" style="color:var(--bad)" onclick="if(confirm('Apagar TODO o progresso?')){try{localStorage.removeItem(KEY)}catch(e){}; S=load(); save(); go('home')}">Resetar progresso</button></div></div>`);
+}
+
+// teclado: 1-4 / a-d para responder, Enter para continuar
+document.addEventListener("keydown", e=>{
+  if (!SES || SES.mode==="exam") return;
+  const m = {"1":0,"2":1,"3":2,"4":3,"a":0,"b":1,"c":2,"d":3}[e.key.toLowerCase()];
+  if (m!==undefined && !SES.answered && $("o"+m)) answer(m);
+  else if (e.key==="Enter" && $("nextBtn")) { e.preventDefault(); nextQ(); }
+});
+
+topbar(); checkAch(); home();
+
+</script>
+</body>
+</html>
